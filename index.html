@@ -170,7 +170,9 @@
 
   <script>
     // URL do seu AWS Lambda Function URL
-    const LAMBDA_BASE_URL = 'https://4n2wbzfpwjhw7boo2eak3caehy0hylmz.lambda-url.sa-east-1.on.aws/'; // SUBSTITUA PELA SUA URL REAL DO LAMBDA
+    const BASE_URL = 'https://4n2wbzfpwjhw7boo2eak3caehy0hylmz.lambda-url.sa-east-1.on.aws';
+    const uploadImageUrl = `${BASE_URL}?action=uploadImage`;
+    const saveExhibitorUrl = `${BASE_URL}?action=saveExhibitor`;
 
     function adicionarProduto( ) {
       const container = document.getElementById("produtosContainer");
@@ -211,7 +213,7 @@
 
       console.log(`Enviando arquivo: ${file.name} como ${targetFileName} para empresa: ${empresaId}`);
 
-      const url = `${LAMBDA_BASE_URL}?action=uploadImage&idEmpresa=${empresaId}`;
+      const url = `${uploadImageUrl}&idEmpresa=${empresaId}`;
 
       try {
         const response = await fetch(url, {
@@ -250,7 +252,7 @@
     async function enviarJsonDireto(payload) {
       console.log('Iniciando upload de JSON para empresa:', payload.idEmpresa);
 
-      const url = `${LAMBDA_BASE_URL}?action=saveExpositor`;
+      const url = saveExhibitorUrl;
 
       try {
         const response = await fetch(url, {
