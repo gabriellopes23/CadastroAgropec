@@ -179,7 +179,7 @@
     const uploadImageUrl = `${BASE_URL}?action=uploadImage`; // Esta URL será usada para todos os uploads de arquivos
     const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`; // Esta URL será usada para o content.json
 
-    function adicionarProduto( ) {
+    function adicionarProduto(  ) {
       const container = document.getElementById("produtosContainer");
       const div = document.createElement("div");
       div.innerHTML = '<input type="file" accept="image/*" class="produtoInput">';
@@ -204,14 +204,15 @@
     }
 
     // Função modificada para enviar qualquer arquivo com sua chave S3 completa
+    // AGORA ENVIA 'filename' NO CABEÇALHO, ASSIM COMO O KOTLIN
     async function enviarArquivoParaS3(file, s3Key) {
-      const url = `${uploadImageUrl}&s3Key=${encodeURIComponent(s3Key)}`; // Passa a chave S3 completa como parâmetro
+      const url = uploadImageUrl; // A URL base não precisa mais do s3Key aqui, pois ele vai no cabeçalho
 
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': file.type,
-          // 'filename': s3Key // O cabeçalho 'filename' não é mais necessário se usarmos 's3Key' no URL
+          'filename': s3Key // <--- ENVIANDO O CABEÇALHO 'filename' COM A CHAVE S3 COMPLETA
         },
         body: file
       });
@@ -227,6 +228,7 @@
     }
 
     // Esta função será usada apenas para o content.json, que tem um payload JSON
+    // MANTÉM O s3Key NA URL PARA O content.json
     async function enviarJsonDireto(payload, s3Key) {
       const url = `${saveExhibitorUrl}&s3Key=${encodeURIComponent(s3Key)}`; // Passa a chave S3 completa para o content.json
 
@@ -261,6 +263,7 @@
         // Define as chaves S3 para cada arquivo
         const empresaFolder = `Exhibitors/${empresaId}/`; // Prefixo da "pasta"
 
+        // Agora, o 'filename' enviado no cabeçalho será a chave S3 completa
         if (logoFile) uploadPromises.push(enviarArquivoParaS3(logoFile, `${empresaFolder}logo.png`));
         if (bannerFile) uploadPromises.push(enviarArquivoParaS3(bannerFile, `${empresaFolder}banner.png`));
 
@@ -296,7 +299,7 @@
             nome: empresaNome,
             description: empresaDesc,
             type: empresaTipo,
-            banner: bannerFile ? "banner.png" : null, // Aqui ainda é só o nome do arquivo, pois o S3Key já foi definido no upload
+            banner: bannerFile ? "banner.png" : null,
             logo: logoFile ? "logo.png" : null,
             programacoes,
             servicos: produtosNomes
