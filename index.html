@@ -119,13 +119,12 @@
   <button onclick="enviar()">Enviar Tudo</button>
   <div id="status" style="margin-top: 20px;"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <script>
-    // As URLs base não serão usadas no modo offline, mas mantidas para referência
+  // ... (código HTML e CSS permanecem os mesmos) ...
+
+<script>
     const BASE_URL = 'https://4n2wbzfpwjhw7boo2eak3caehy0hylmz.lambda-url.sa-east-1.on.aws';
-    const uploadImageUrl = `${BASE_URL}?action=uploadImage`;
-    const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`;
+    const uploadImageUrl = `${BASE_URL}?action=uploadImage`; // Esta URL será usada para todos os uploads de arquivos
+    const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`; // Esta URL será usada para o content.json
 
     function adicionarProduto( ) {
       const container = document.getElementById("produtosContainer");
@@ -151,14 +150,41 @@
       div.innerText = message;
     }
 
-    // Função auxiliar para ler o conteúdo de um arquivo como ArrayBuffer
-    function readFileAsArrayBuffer(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsArrayBuffer(file);
+    // Função modificada para enviar qualquer arquivo com sua chave S3 completa
+    async function enviarArquivoParaS3(file, s3Key) {
+      const url = `${uploadImageUrl}&s3Key=${encodeURIComponent(s3Key)}`; // Passa a chave S3 completa como parâmetro
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': file.type,
+          // 'filename': s3Key // O cabeçalho 'filename' não é mais necessário se usarmos 's3Key' no URL
+        },
+        body: file
       });
+
+      const text = await response.text();
+      if (!response.ok) throw new Error(`Erro no upload de ${s3Key}: ${text}`);
+
+      try {
+        return JSON.parse(text);
+      } catch {
+        return { message: text };
+      }
+    }
+
+    // Esta função será usada apenas para o content.json, que tem um payload JSON
+    async function enviarJsonDireto(payload, s3Key) {
+      const url = `${saveExhibitorUrl}&s3Key=${encodeURIComponent(s3Key)}`; // Passa a chave S3 completa para o content.json
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const text = await response.text();
+      if (!response.ok) throw new Error(`Erro no envio JSON: ${text}`);
+      return JSON.parse(text);
     }
 
     async function enviar() {
@@ -173,37 +199,30 @@
         }
 
         const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
-        const zip = new JSZip();
-        const folder = zip.folder(empresaId); // Cria a pasta com o nome da empresa
-
+        const uploadPromises = [];
         const produtosNomes = [];
 
         const logoFile = document.getElementById("logoInput").files[0];
         const bannerFile = document.getElementById("bannerInput").files[0];
 
-        showStatus("📦 Preparando arquivos para download...", 'loading');
+        // Define as chaves S3 para cada arquivo
+        const empresaFolder = `Exhibitors/${empresaId}/`; // Prefixo da "pasta"
 
-        // Adiciona logo e banner ao ZIP
-        if (logoFile) {
-          const logoData = await readFileAsArrayBuffer(logoFile);
-          folder.file("logo.png", logoData);
-        }
-        if (bannerFile) {
-          const bannerData = await readFileAsArrayBuffer(bannerFile);
-          folder.file("banner.png", bannerData);
-        }
+        if (logoFile) uploadPromises.push(enviarArquivoParaS3(logoFile, `${empresaFolder}logo.png`));
+        if (bannerFile) uploadPromises.push(enviarArquivoParaS3(bannerFile, `${empresaFolder}banner.png`));
 
-        // Adiciona produtos ao ZIP
         const produtoInputs = document.getElementsByClassName("produtoInput");
         for (let i = 0; i < produtoInputs.length; i++) {
           const file = produtoInputs[i].files[0];
           if (file) {
             const nomeArquivo = `product_${i + 1}.png`;
             produtosNomes.push(nomeArquivo);
-            const produtoData = await readFileAsArrayBuffer(file);
-            folder.file(nomeArquivo, produtoData);
+            uploadPromises.push(enviarArquivoParaS3(file, `${empresaFolder}${nomeArquivo}`));
           }
         }
+
+        showStatus("📤 Enviando arquivos para o AWS S3...", 'loading');
+        await Promise.all(uploadPromises); // Espera todos os uploads de imagem/arquivo terminarem
 
         const horarios = document.getElementsByClassName("programacaoHorario");
         const titulos = document.getElementsByClassName("programacaoTitulo");
@@ -224,7 +243,7 @@
             nome: empresaNome,
             description: empresaDesc,
             type: empresaTipo,
-            banner: bannerFile ? "banner.png" : null,
+            banner: bannerFile ? "banner.png" : null, // Aqui ainda é só o nome do arquivo, pois o S3Key já foi definido no upload
             logo: logoFile ? "logo.png" : null,
             programacoes,
             servicos: produtosNomes
@@ -233,22 +252,11 @@
           locationLink: null
         };
 
-        // Adiciona o content.json ao ZIP
-        folder.file("content.json", JSON.stringify(content, null, 2)); // Formata o JSON para legibilidade
+        // Envia o content.json para a chave S3 desejada
+        showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
+        await enviarJsonDireto(content, `${empresaFolder}content.json`); // Passa o content e a chave S3
 
-        showStatus("⏳ Gerando arquivo ZIP...", 'loading');
-
-        // Gera o ZIP e inicia o download
-        zip.generateAsync({ type: "blob" })
-          .then(function(content) {
-            saveAs(content, `${empresaId}.zip`); // Usa FileSaver.js para baixar o arquivo
-            showStatus("✅ Arquivo ZIP gerado e baixado com sucesso!", 'success');
-          })
-          .catch(err => {
-            console.error(err);
-            showStatus(`❌ Erro ao gerar ZIP: ${err.message}`, 'error');
-          });
-
+        showStatus("✅ Cadastro enviado com sucesso para o AWS S3!", 'success');
       } catch (err) {
         console.error(err);
         showStatus(`❌ Erro: ${err.message}`, 'error');
@@ -256,5 +264,4 @@
     }
   </script>
 </body>
-
 </html>
