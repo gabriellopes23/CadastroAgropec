@@ -33,7 +33,8 @@
 
     input,
     button,
-    textarea {
+    textarea,
+    select { /* Adicionado 'select' aqui para aplicar os estilos */
       margin-top: 10px;
       display: block;
       width: 100%;
@@ -45,11 +46,28 @@
     }
 
     input,
-    textarea {
+    textarea,
+    select { /* Adicionado 'select' aqui para aplicar os estilos */
       background-color: #2E6E65;
       color: white;
       border: 1px solid #1B3F3B;
+      /* Estilo para a seta do select em navegadores WebKit (Chrome, Safari ) */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20256%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M208.5%2096.5L128%20177l-80.5-80.5z%22%2F%3E%3C%2Fsvg%3E' );
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 1em;
+      padding-right: 2em; /* Espaço para a seta */
     }
+
+    /* Estilo para as opções do select */
+    select option {
+        background-color: #2E6E65; /* Cor de fundo das opções */
+        color: white; /* Cor do texto das opções */
+    }
+
 
     input::placeholder,
     textarea::placeholder {
@@ -158,7 +176,17 @@
   <textarea id="empresaDesc" rows="4" placeholder="Descrição da empresa"></textarea>
 
   <label>Tipo:</label>
-  <input type="text" id="empresaTipo" placeholder="ex: PECUARIA">
+  <select id="empresaTipo">
+    <option value="">Selecione o Tipo</option> <!-- Opção padrão -->
+    <option value="AGRICULTURA">AGRICULTURA</option>
+    <option value="TECNOLOGIA">TECNOLOGIA</option>
+    <option value="PECUARIA">PECUARIA</option>
+    <option value="BELEZA">BELEZA</option>
+    <option value="ALIMENTACAO">ALIMENTACAO</option>
+    <option value="MAQUINAS">MAQUINAS</option>
+    <option value="ARTESANATO">ARTESANATO</option>
+    <option value="MINERACAO">MINERACAO</option>
+  </select>
 
   <label>Logo:</label>
   <input type="file" id="logoInput" accept="image/*">
@@ -170,7 +198,7 @@
   <div id="produtosContainer">
     <!-- Inputs serão adicionados aqui ao clicar -->
   </div>
-  <button type="button" onclick="adicionarProduto( )">Adicionar Produto / Serviço</button>
+  <button type="button" onclick="adicionarProduto(  )">Adicionar Produto / Serviço</button>
 
   <h3>Programações</h3>
   <div id="programacoesContainer" class="programacoes-container">
@@ -187,7 +215,7 @@
     const uploadImageUrl = `${BASE_URL}?action=uploadImage`; // URL para upload de imagens
     const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`; // URL para salvar o content.json
 
-    function adicionarProduto(  ) {
+    function adicionarProduto(   ) {
       const container = document.getElementById("produtosContainer");
       const div = document.createElement("div");
       div.innerHTML = '<input type="file" accept="image/*" class="produtoInput">';
@@ -252,9 +280,9 @@
   try {
     const empresaNome = document.getElementById("empresaNome").value.trim();
     const empresaDesc = document.getElementById("empresaDesc").value.trim();
-    const empresaTipo = document.getElementById("empresaTipo").value.trim();
+    const empresaTipo = document.getElementById("empresaTipo").value.trim(); // Pega o valor do select
 
-    if (!empresaNome || !empresaDesc) {
+    if (!empresaNome || !empresaDesc || !empresaTipo) { // Adicionado empresaTipo na validação
       showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
       return;
     }
@@ -282,7 +310,6 @@
     }
 
     showStatus("📤 Enviando arquivos para o AWS S3...", 'loading');
-    // AQUI: Adicione um console.log para ver o status das promessas de upload de imagens
     const imageUploadResults = await Promise.allSettled(uploadPromises);
     imageUploadResults.forEach((result, index) => {
         if (result.status === 'fulfilled') {
@@ -311,7 +338,7 @@
           estande: {
             nome: empresaNome,
             description: empresaDesc,
-            type: empresaTipo,
+            type: empresaTipo, // O valor selecionado do select
             banner: bannerFile ? "banner.png" : null,
             logo: logoFile ? "logo.png" : null,
             programacoes,
@@ -321,11 +348,9 @@
           locationLink: null
         };
 
-    // AQUI: Adicione console.log para o payload do content.json
     console.log("Payload do content.json:", JSON.stringify(content, null, 2));
 
     showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
-    // AQUI: Aguarde explicitamente o envio do JSON e capture erros
     try {
         const jsonResult = await enviarJsonParaLambdaOriginal(content);
         console.log("Envio do content.json SUCESSO:", jsonResult);
