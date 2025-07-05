@@ -7,6 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Expositor - Agropec 2025</title>
 
+  <!-- Meta Tags Open Graph para preview em redes sociais (WhatsApp, Facebook, etc.) -->
+  <meta property="og:title" content="Cadastro de Expositor - Agropec 2025">
+  <meta property="og:description" content="Preencha o formulário para cadastrar sua empresa na Agropec 2025 e faça parte do evento!">
+  <meta property="og:image" content="https://i.postimg.cc/xqrqcZbt/logo-agropec.png"> <!-- Use a URL da sua imagem de preview aqui -->
+  <meta property="og:url" content="https://gabriellopes23.github.io/CadastroAgropec/"> <!-- Use a URL final do seu site aqui -->
+  <meta property="og:type" content="website">
+  <!-- Fim das Meta Tags Open Graph -->
+
   <!-- Importação da fonte Montserrat do Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,9 +23,9 @@
 
   <style>
     body {
-      font-family: 'Montserrat', sans-serif; /* Aplicando a fonte Montserrat */
+      font-family: 'Montserrat', sans-serif;
       padding: 20px;
-      max-width: 700px;
+      max-width: 600px;
       margin: auto;
       background-color: #1E4844;
       color: white;
@@ -176,8 +184,8 @@
 
 <script>
     const BASE_URL = 'https://4n2wbzfpwjhw7boo2eak3caehy0hylmz.lambda-url.sa-east-1.on.aws';
-    const uploadImageUrl = `${BASE_URL}?action=uploadImage`; // Esta URL será usada para todos os uploads de arquivos
-    const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`; // Esta URL será usada para o content.json
+    const uploadImageUrl = `${BASE_URL}?action=uploadImage`; // URL para upload de imagens
+    const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`; // URL para salvar o content.json
 
     function adicionarProduto(  ) {
       const container = document.getElementById("produtosContainer");
@@ -203,22 +211,21 @@
       div.innerText = message;
     }
 
-    // Função modificada para enviar qualquer arquivo com sua chave S3 completa
-    // AGORA ENVIA 'filename' NO CABEÇALHO, ASSIM COMO O KOTLIN
-    async function enviarArquivoParaS3(file, s3Key) {
-      const url = uploadImageUrl; // A URL base não precisa mais do s3Key aqui, pois ele vai no cabeçalho
+    // Função para enviar arquivos (imagens) usando o cabeçalho 'filename'
+    async function enviarArquivoParaLambdaOriginal(file, fileNameWithFolder) {
+      const url = uploadImageUrl; // A URL já tem a action=uploadImage
 
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': file.type,
-          'filename': s3Key // <--- ENVIANDO O CABEÇALHO 'filename' COM A CHAVE S3 COMPLETA
+          'Content-Type': file.type, // O tipo do arquivo (image/png, image/jpeg, etc.)
+          'filename': fileNameWithFolder // <--- O NOME DO ARQUIVO COM A PASTA (Ex: Exhibitors/empresaId/logo.png)
         },
-        body: file
+        body: file // O conteúdo binário do arquivo
       });
 
       const text = await response.text();
-      if (!response.ok) throw new Error(`Erro no upload de ${s3Key}: ${text}`);
+      if (!response.ok) throw new Error(`Erro no upload de ${fileNameWithFolder}: ${text}`);
 
       try {
         return JSON.parse(text);
@@ -227,10 +234,9 @@
       }
     }
 
-    // Esta função será usada apenas para o content.json, que tem um payload JSON
-    // MANTÉM O s3Key NA URL PARA O content.json
-    async function enviarJsonDireto(payload, s3Key) {
-      const url = `${saveExhibitorUrl}&s3Key=${encodeURIComponent(s3Key)}`; // Passa a chave S3 completa para o content.json
+    // Função para enviar o JSON do expositor (o Lambda original gera o timestamp e a pasta)
+    async function enviarJsonParaLambdaOriginal(payload) {
+      const url = saveExhibitorUrl; // A URL já tem a action=saveExpositor
 
       const response = await fetch(url, {
         method: 'POST',
@@ -260,12 +266,12 @@
         const logoFile = document.getElementById("logoInput").files[0];
         const bannerFile = document.getElementById("bannerInput").files[0];
 
-        // Define as chaves S3 para cada arquivo
-        const empresaFolder = `Exhibitors/${empresaId}/`; // Prefixo da "pasta"
+        // Define o prefixo da "pasta" para os arquivos de imagem
+        const empresaFolder = `Exhibitors/${empresaId}/`;
 
-        // Agora, o 'filename' enviado no cabeçalho será a chave S3 completa
-        if (logoFile) uploadPromises.push(enviarArquivoParaS3(logoFile, `${empresaFolder}logo.png`));
-        if (bannerFile) uploadPromises.push(enviarArquivoParaS3(bannerFile, `${empresaFolder}banner.png`));
+        // Envia os arquivos de imagem com o nome completo (incluindo a pasta) no cabeçalho 'filename'
+        if (logoFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(logoFile, `${empresaFolder}logo.png`));
+        if (bannerFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(bannerFile, `${empresaFolder}banner.png`));
 
         const produtoInputs = document.getElementsByClassName("produtoInput");
         for (let i = 0; i < produtoInputs.length; i++) {
@@ -273,7 +279,7 @@
           if (file) {
             const nomeArquivo = `product_${i + 1}.png`;
             produtosNomes.push(nomeArquivo);
-            uploadPromises.push(enviarArquivoParaS3(file, `${empresaFolder}${nomeArquivo}`));
+            uploadPromises.push(enviarArquivoParaLambdaOriginal(file, `${empresaFolder}${nomeArquivo}`));
           }
         }
 
@@ -308,9 +314,9 @@
           locationLink: null
         };
 
-        // Envia o content.json para a chave S3 desejada
+        // Envia o content.json. O Lambda original vai criar uma pasta com timestamp para ele.
         showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
-        await enviarJsonDireto(content, `${empresaFolder}content.json`); // Passa o content e a chave S3
+        await enviarJsonParaLambdaOriginal(content);
 
         showStatus("✅ Cadastro enviado com sucesso para o AWS S3!", 'success');
       } catch (err) {
