@@ -249,81 +249,97 @@
     }
 
     async function enviar() {
-      try {
-        const empresaNome = document.getElementById("empresaNome").value.trim();
-        const empresaDesc = document.getElementById("empresaDesc").value.trim();
-        const empresaTipo = document.getElementById("empresaTipo").value.trim();
+  try {
+    const empresaNome = document.getElementById("empresaNome").value.trim();
+    const empresaDesc = document.getElementById("empresaDesc").value.trim();
+    const empresaTipo = document.getElementById("empresaTipo").value.trim();
 
-        if (!empresaNome || !empresaDesc || !empresaTipo) {
-          showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
-          return;
-        }
+    if (!empresaNome || !empresaDesc || !empresaTipo) {
+      showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
+      return;
+    }
 
-        const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
-        const uploadPromises = [];
-        const produtosNomes = [];
+    const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
+    const uploadPromises = [];
+    const produtosNomes = [];
 
-        const logoFile = document.getElementById("logoInput").files[0];
-        const bannerFile = document.getElementById("bannerInput").files[0];
+    const logoFile = document.getElementById("logoInput").files[0];
+    const bannerFile = document.getElementById("bannerInput").files[0];
 
-        // Define o prefixo da "pasta" para os arquivos de imagem
-        const empresaFolder = `Exhibitors/${empresaId}/`;
+    const empresaFolder = `Exhibitors/${empresaId}/`;
 
-        // Envia os arquivos de imagem com o nome completo (incluindo a pasta) no cabeçalho 'filename'
-        if (logoFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(logoFile, `${empresaFolder}logo.png`));
-        if (bannerFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(bannerFile, `${empresaFolder}banner.png`));
+    if (logoFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(logoFile, `${empresaFolder}logo.png`));
+    if (bannerFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(bannerFile, `${empresaFolder}banner.png`));
 
-        const produtoInputs = document.getElementsByClassName("produtoInput");
-        for (let i = 0; i < produtoInputs.length; i++) {
-          const file = produtoInputs[i].files[0];
-          if (file) {
-            const nomeArquivo = `product_${i + 1}.png`;
-            produtosNomes.push(nomeArquivo);
-            uploadPromises.push(enviarArquivoParaLambdaOriginal(file, `${empresaFolder}${nomeArquivo}`));
-          }
-        }
-
-        showStatus("📤 Enviando arquivos para o AWS S3...", 'loading');
-        await Promise.all(uploadPromises); // Espera todos os uploads de imagem/arquivo terminarem
-
-        const horarios = document.getElementsByClassName("programacaoHorario");
-        const titulos = document.getElementsByClassName("programacaoTitulo");
-        const programacoes = [];
-
-        for (let i = 0; i < horarios.length; i++) {
-          const horario = horarios[i].value.trim();
-          const titulo = titulos[i].value.trim();
-          if (horario && titulo) {
-            programacoes.push({ horario, titulo, data: "13/07/2025" });
-          }
-        }
-
-        const content = {
-          nome: empresaNome,
-          id: empresaId,
-          estande: {
-            nome: empresaNome,
-            description: empresaDesc,
-            type: empresaTipo,
-            banner: bannerFile ? "banner.png" : null,
-            logo: logoFile ? "logo.png" : null,
-            programacoes,
-            servicos: produtosNomes
-          },
-          emailContact: null,
-          locationLink: null
-        };
-
-        // Envia o content.json. O Lambda original vai criar uma pasta com timestamp para ele.
-        showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
-        await enviarJsonParaLambdaOriginal(content);
-
-        showStatus("✅ Cadastro enviado com sucesso para o AWS S3!", 'success');
-      } catch (err) {
-        console.error(err);
-        showStatus(`❌ Erro: ${err.message}`, 'error');
+    const produtoInputs = document.getElementsByClassName("produtoInput");
+    for (let i = 0; i < produtoInputs.length; i++) {
+      const file = produtoInputs[i].files[0];
+      if (file) {
+        const nomeArquivo = `product_${i + 1}.png`;
+        produtosNomes.push(nomeArquivo);
+        uploadPromises.push(enviarArquivoParaLambdaOriginal(file, `${empresaFolder}${nomeArquivo}`));
       }
     }
+
+    showStatus("📤 Enviando arquivos para o AWS S3...", 'loading');
+    // AQUI: Adicione um console.log para ver o status das promessas de upload de imagens
+    const imageUploadResults = await Promise.allSettled(uploadPromises);
+    imageUploadResults.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+            console.log(`Upload de imagem ${index + 1} SUCESSO:`, result.value);
+        } else {
+            console.error(`Upload de imagem ${index + 1} FALHA:`, result.reason);
+        }
+    });
+
+
+    const horarios = document.getElementsByClassName("programacaoHorario");
+    const titulos = document.getElementsByClassName("programacaoTitulo");
+    const programacoes = [];
+
+    for (let i = 0; i < horarios.length; i++) {
+      const horario = horarios[i].value.trim();
+      const titulo = titulos[i].value.trim();
+      if (horario && titulo) {
+        programacoes.push({ horario, titulo, data: "13/07/2025" });
+      }
+    }
+
+    const content = {
+      nome: empresaNome,
+      id: empresaId,
+      estande: {
+        nome: empresaNome,
+        description: empresaDesc,
+        type: empresaTipo,
+        banner: bannerFile ? "banner.png" : null,
+        logo: logoFile ? "logo.png" : null,
+        programacoes,
+        servicos: produtosNomes
+      },
+      emailContact: null,
+      locationLink: null
+    };
+
+    // AQUI: Adicione console.log para o payload do content.json
+    console.log("Payload do content.json:", JSON.stringify(content, null, 2));
+
+    showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
+    // AQUI: Aguarde explicitamente o envio do JSON e capture erros
+    try {
+        const jsonResult = await enviarJsonParaLambdaOriginal(content);
+        console.log("Envio do content.json SUCESSO:", jsonResult);
+        showStatus("✅ Cadastro enviado com sucesso para o AWS S3!", 'success');
+    } catch (jsonError) {
+        console.error("Envio do content.json FALHA:", jsonError);
+        showStatus(`❌ Erro ao enviar dados do expositor: ${jsonError.message}`, 'error');
+    }
+
+  } catch (err) {
+    console.error("Erro geral no envio:", err);
+    showStatus(`❌ Erro: ${err.message}`, 'error');
+  }
+}
   </script>
 </body>
 </html>
