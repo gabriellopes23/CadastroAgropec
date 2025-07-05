@@ -110,7 +110,7 @@
 
   <label>Produtos / Serviços</label>
   <div id="produtosContainer"></div>
-  <button type="button" onclick="adicionarProduto()">Adicionar Produto</button>
+  <button type="button" onclick="adicionarProduto( )">Adicionar Produto</button>
 
   <h3>Programações</h3>
   <div id="programacoesContainer"></div>
@@ -119,12 +119,15 @@
   <button onclick="enviar()">Enviar Tudo</button>
   <div id="status" style="margin-top: 20px;"></div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script>
+    // As URLs base não serão usadas no modo offline, mas mantidas para referência
     const BASE_URL = 'https://4n2wbzfpwjhw7boo2eak3caehy0hylmz.lambda-url.sa-east-1.on.aws';
     const uploadImageUrl = `${BASE_URL}?action=uploadImage`;
     const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`;
 
-    function adicionarProduto() {
+    function adicionarProduto( ) {
       const container = document.getElementById("produtosContainer");
       const div = document.createElement("div");
       div.innerHTML = '<input type="file" accept="image/*" class="produtoInput">';
@@ -148,38 +151,14 @@
       div.innerText = message;
     }
 
-    async function enviarArquivoDireto(file, fileName, empresaId) {
-  const url = `${uploadImageUrl}&idEmpresa=${empresaId}`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': file.type,
-      'filename': fileName
-    },
-    body: file
-  });
-
-  const text = await response.text();
-  if (!response.ok) throw new Error(`Erro no upload: ${text}`);
-
-  // Se a resposta não for JSON, apenas retorna o texto simples
-  try {
-    return JSON.parse(text);
-  } catch {
-    return { message: text };
-  }
-}
-
-    async function enviarJsonDireto(payload) {
-      const response = await fetch(saveExhibitorUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+    // Função auxiliar para ler o conteúdo de um arquivo como ArrayBuffer
+    function readFileAsArrayBuffer(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
       });
-      const text = await response.text();
-      if (!response.ok) throw new Error(`Erro no envio JSON: ${text}`);
-      return JSON.parse(text);
     }
 
     async function enviar() {
@@ -194,27 +173,37 @@
         }
 
         const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
-        const uploadPromises = [];
+        const zip = new JSZip();
+        const folder = zip.folder(empresaId); // Cria a pasta com o nome da empresa
+
         const produtosNomes = [];
 
         const logoFile = document.getElementById("logoInput").files[0];
         const bannerFile = document.getElementById("bannerInput").files[0];
 
-        if (logoFile) uploadPromises.push(enviarArquivoDireto(logoFile, "logo.png", empresaId));
-        if (bannerFile) uploadPromises.push(enviarArquivoDireto(bannerFile, "banner.png", empresaId));
+        showStatus("📦 Preparando arquivos para download...", 'loading');
 
+        // Adiciona logo e banner ao ZIP
+        if (logoFile) {
+          const logoData = await readFileAsArrayBuffer(logoFile);
+          folder.file("logo.png", logoData);
+        }
+        if (bannerFile) {
+          const bannerData = await readFileAsArrayBuffer(bannerFile);
+          folder.file("banner.png", bannerData);
+        }
+
+        // Adiciona produtos ao ZIP
         const produtoInputs = document.getElementsByClassName("produtoInput");
         for (let i = 0; i < produtoInputs.length; i++) {
           const file = produtoInputs[i].files[0];
           if (file) {
             const nomeArquivo = `product_${i + 1}.png`;
             produtosNomes.push(nomeArquivo);
-            uploadPromises.push(enviarArquivoDireto(file, nomeArquivo, empresaId));
+            const produtoData = await readFileAsArrayBuffer(file);
+            folder.file(nomeArquivo, produtoData);
           }
         }
-
-        showStatus("📤 Enviando arquivos...", 'loading');
-        await Promise.all(uploadPromises);
 
         const horarios = document.getElementsByClassName("programacaoHorario");
         const titulos = document.getElementsByClassName("programacaoTitulo");
@@ -244,12 +233,22 @@
           locationLink: null
         };
 
-        const payload = { idEmpresa: empresaId, content };
+        // Adiciona o content.json ao ZIP
+        folder.file("content.json", JSON.stringify(content, null, 2)); // Formata o JSON para legibilidade
 
-        showStatus("📄 Enviando dados...", 'loading');
-        await enviarJsonDireto(payload);
+        showStatus("⏳ Gerando arquivo ZIP...", 'loading');
 
-        showStatus("✅ Cadastro enviado com sucesso!", 'success');
+        // Gera o ZIP e inicia o download
+        zip.generateAsync({ type: "blob" })
+          .then(function(content) {
+            saveAs(content, `${empresaId}.zip`); // Usa FileSaver.js para baixar o arquivo
+            showStatus("✅ Arquivo ZIP gerado e baixado com sucesso!", 'success');
+          })
+          .catch(err => {
+            console.error(err);
+            showStatus(`❌ Erro ao gerar ZIP: ${err.message}`, 'error');
+          });
+
       } catch (err) {
         console.error(err);
         showStatus(`❌ Erro: ${err.message}`, 'error');
