@@ -254,7 +254,7 @@
     const empresaDesc = document.getElementById("empresaDesc").value.trim();
     const empresaTipo = document.getElementById("empresaTipo").value.trim();
 
-    if (!empresaNome || !empresaDesc || !empresaTipo) {
+    if (!empresaNome || !empresaDesc) {
       showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
       return;
     }
