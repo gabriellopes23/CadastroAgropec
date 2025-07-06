@@ -54,6 +54,10 @@
       --file-button-hover: #e9ecef;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Montserrat', sans-serif;
       background-color: var(--bg-dark-green);
@@ -131,6 +135,7 @@
       margin-top: 0;
       margin-bottom: 20px;
       transition: border-color 0.3s ease;
+      box-sizing: border-box;
     }
 
     input[type="text"]:focus,
@@ -163,6 +168,7 @@
       background-size: 1em;
       padding-right: 2em;
       border-radius: 0;
+      box-sizing: border-box;
     }
 
     select option {
@@ -170,10 +176,12 @@
       color: var(--card-text-color);
     }
 
-    /* ESTILO CUSTOMIZADO PARA INPUT DE ARQUIVO */
+    /* ESTILO CUSTOMIZADO PARA INPUT DE ARQUIVO - CORRIGIDO PARA RESPONSIVIDADE */
     .file-input-container {
       position: relative;
       margin-bottom: 20px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     /* Esconde o input de arquivo original */
@@ -185,12 +193,13 @@
       overflow: hidden;
     }
 
-    /* Botão customizado para input de arquivo */
+    /* Botão customizado para input de arquivo - CORRIGIDO */
     .file-input-button {
-      display: inline-flex;
+      display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
-      padding: 12px 20px;
+      padding: 12px 16px;
       background: var(--file-button-bg);
       border: 2px solid var(--file-button-border);
       border-radius: 10px;
@@ -202,8 +211,13 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      min-width: 180px;
-      justify-content: center;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      word-wrap: break-word;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     .file-input-button:hover {
@@ -221,6 +235,7 @@
     .file-input-button::before {
       content: '📁';
       font-size: 1.1rem;
+      flex-shrink: 0;
     }
 
     /* Texto do arquivo selecionado */
@@ -231,6 +246,9 @@
       font-weight: 500;
       font-style: italic;
       min-height: 20px;
+      word-wrap: break-word;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     /* Estilo especial quando arquivo está selecionado */
@@ -263,6 +281,7 @@
       overflow: hidden;
       outline: none;
       user-select: none;
+      box-sizing: border-box;
     }
 
     /* Botão primário - Adicionar */
@@ -276,7 +295,8 @@
       letter-spacing: 0.5px;
       box-shadow: 0 4px 15px rgba(58, 175, 169, 0.3);
       margin: 10px 0;
-      min-width: 160px;
+      width: 100%;
+      max-width: 100%;
     }
 
     .btn-primary::before {
@@ -322,8 +342,8 @@
       font-size: 0.8rem;
       font-weight: 500;
       border: 1px solid rgba(220, 53, 69, 0.2);
-      min-width: 80px;
       transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     .btn-remove:hover {
@@ -361,6 +381,8 @@
       box-shadow: 0 8px 30px rgba(58, 175, 169, 0.4);
       position: relative;
       overflow: hidden;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .btn-enviar::before {
@@ -408,9 +430,11 @@
       flex-direction: column;
       gap: 15px;
       margin: 25px 0;
+      width: 100%;
+      box-sizing: border-box;
     }
 
-    /* Estilo para os itens de produto e programação */
+    /* Estilo para os itens de produto e programação - CORRIGIDO */
     .produto-item,
     .programacao-item {
       display: flex;
@@ -422,6 +446,8 @@
       border-radius: 12px;
       border: 1px solid rgba(58, 175, 169, 0.1);
       transition: all 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .produto-item:hover,
@@ -439,6 +465,7 @@
       margin-bottom: 0;
       background: transparent;
       border-bottom-color: rgba(58, 175, 169, 0.3);
+      min-width: 0;
     }
 
     .produto-item button,
@@ -447,15 +474,18 @@
       margin-top: 0;
     }
 
-    /* Estilo especial para input de arquivo dentro dos produtos */
+    /* Estilo especial para input de arquivo dentro dos produtos - CORRIGIDO */
     .produto-item .file-input-container {
       flex-grow: 1;
       margin-bottom: 0;
+      min-width: 0;
+      width: auto;
     }
 
     .produto-item .file-input-button {
       width: 100%;
-      min-width: auto;
+      min-width: 0;
+      max-width: 100%;
     }
 
     /* Seções com títulos melhorados */
@@ -489,6 +519,8 @@
       padding: 15px;
       border-radius: 12px;
       border: 1px solid transparent;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .error {
@@ -509,34 +541,89 @@
       border-color: var(--loading-color);
     }
 
-    /* Responsividade para dispositivos móveis */
+    /* Responsividade para dispositivos móveis - MELHORADA */
     @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
       .form-container {
-        padding: 25px;
-        margin: 10px;
+        padding: 20px;
+        margin: 0;
+        max-width: 100%;
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .logo-container img {
+        max-width: 150px;
       }
 
       .produto-item,
       .programacao-item {
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
+        gap: 15px;
+        padding: 12px;
       }
 
-      .btn-primary {
-        min-width: auto;
+      .produto-item .file-input-container,
+      .programacao-item input {
         width: 100%;
+        margin-bottom: 10px;
       }
 
       .btn-remove {
-        min-width: auto;
-        align-self: flex-end;
-        width: 100px;
+        align-self: center;
+        width: auto;
+        min-width: 100px;
       }
 
       .file-input-button {
-        min-width: auto;
-        width: 100%;
+        padding: 10px 12px;
+        font-size: 0.85rem;
+      }
+
+      .btn-primary {
+        padding: 14px 20px;
+        font-size: 0.9rem;
+      }
+
+      .btn-enviar {
+        padding: 16px 24px;
+        font-size: 1rem;
+      }
+
+      /* Garantir que nada saia do container */
+      * {
+        max-width: 100%;
+        word-wrap: break-word;
+      }
+    }
+
+    /* Responsividade extra para telas muito pequenas */
+    @media (max-width: 400px) {
+      .form-container {
+        padding: 15px;
+      }
+
+      .file-input-button {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+        gap: 6px;
+      }
+
+      .btn-primary {
+        padding: 12px 16px;
+        font-size: 0.85rem;
+      }
+
+      .btn-enviar {
+        padding: 14px 20px;
+        font-size: 0.95rem;
       }
     }
 
@@ -637,7 +724,8 @@
       const file = input.files[0];
       if (file) {
         button.classList.add('has-file');
-        button.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+        const displayName = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
+        button.textContent = displayName;
         fileName.textContent = `Arquivo selecionado: ${file.name}`;
       } else {
         button.classList.remove('has-file');
@@ -831,3 +919,4 @@
   </script>
 </body>
 </html>
+
