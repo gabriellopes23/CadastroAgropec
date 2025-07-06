@@ -10,16 +10,14 @@
   <!-- Meta Tags Open Graph para preview em redes sociais (WhatsApp, Facebook, etc.) -->
   <meta property="og:title" content="Cadastro de Expositor - Agropec 2025">
   <meta property="og:description" content="Preencha o formulário para cadastrar sua empresa na Agropec 2025 e faça parte do evento!">
-  <meta property="og:image" content="https://i.postimg.cc/xqrqcZbt/logo-agropec.png"> <!-- Use a URL da sua imagem de preview aqui -->
-  <meta property="og:url" content="https://gabriellopes23.github.io/CadastroAgropec/"> <!-- Use a URL final do seu site aqui -->
+  <meta property="og:image" content="https://i.postimg.cc/xqrqcZbt/logo-agropec.png">
+  <meta property="og:url" content="https://gabriellopes23.github.io/CadastroAgropec/">
   <meta property="og:type" content="website">
-  <!-- Fim das Meta Tags Open Graph -->
 
   <!-- Importação da fonte Montserrat do Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Fim da importação da fonte -->
 
   <style>
     /* Cores da paleta Agropec */
@@ -31,14 +29,14 @@
       --button-hover-green: #2c8b87;
       --button-light-green: #4ECDC4;
       --text-white: white;
-      --placeholder-color: #666; /* Cor do placeholder ajustada */
+      --placeholder-color: #666;
       --error-color: #ff6b6b;
-      --error-bg: #2c1515;
+      --error-bg: rgba(255, 107, 107, 0.1);
       --success-color: #51cf66;
-      --success-bg: #1a2e1a;
+      --success-bg: rgba(81, 207, 102, 0.1);
       --loading-color: #ffd43b;
       --loading-bg: #2e2a1a;
-      --card-bg: rgba(255, 255, 255, 0.942);
+      --card-bg: rgba(255, 255, 255, 0.934);
       --card-text-color: #333;
       --input-line-color: #ccc;
       --input-focus-color: #3AAFA9;
@@ -71,7 +69,7 @@
       box-sizing: border-box;
     }
 
-    .form-container {
+    .main-container {
       background-color: var(--card-bg);
       color: var(--card-text-color);
       padding: 40px;
@@ -82,6 +80,21 @@
       width: 100%;
       box-sizing: border-box;
       position: relative;
+      min-height: 600px;
+    }
+
+    .form-content {
+      transition: opacity 0.3s ease;
+    }
+
+    .form-content.hidden {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
     }
 
     h1 {
@@ -178,7 +191,7 @@
       color: var(--card-text-color);
     }
 
-    /* ESTILO CUSTOMIZADO PARA INPUT DE ARQUIVO - CORRIGIDO PARA RESPONSIVIDADE */
+    /* ESTILO CUSTOMIZADO PARA INPUT DE ARQUIVO */
     .file-input-container {
       position: relative;
       margin-bottom: 20px;
@@ -186,7 +199,6 @@
       box-sizing: border-box;
     }
 
-    /* Esconde o input de arquivo original */
     input[type="file"] {
       position: absolute;
       opacity: 0;
@@ -195,7 +207,6 @@
       overflow: hidden;
     }
 
-    /* Botão customizado para input de arquivo - CORRIGIDO */
     .file-input-button {
       display: flex;
       align-items: center;
@@ -233,14 +244,12 @@
       transform: translateY(0);
     }
 
-    /* Ícone do botão de arquivo */
     .file-input-button::before {
       content: '📁';
       font-size: 1.1rem;
       flex-shrink: 0;
     }
 
-    /* Texto do arquivo selecionado */
     .file-name {
       margin-top: 8px;
       font-size: 0.8rem;
@@ -253,7 +262,6 @@
       box-sizing: border-box;
     }
 
-    /* NOVA INDICAÇÃO VISUAL DE LIMITE DE TAMANHO */
     .file-size-info {
       margin-top: 5px;
       font-size: 0.75rem;
@@ -269,7 +277,6 @@
       font-size: 0.8rem;
     }
 
-    /* Estilo especial quando arquivo está selecionado */
     .file-input-button.has-file {
       background: linear-gradient(135deg, rgba(58, 175, 169, 0.1) 0%, rgba(78, 205, 196, 0.1) 100%);
       border-color: var(--button-green);
@@ -281,7 +288,6 @@
       color: var(--button-green);
     }
 
-    /* Estilo especial quando arquivo é muito grande */
     .file-input-button.file-too-large {
       background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 107, 107, 0.2) 100%);
       border-color: var(--error-color);
@@ -293,9 +299,7 @@
       color: var(--error-color);
     }
 
-    /* NOVOS ESTILOS PARA BOTÕES - DESIGN CLEAN E MODERNO */
-    
-    /* Botão base - reset de estilos */
+    /* ESTILOS PARA BOTÕES */
     button {
       border: none;
       cursor: pointer;
@@ -314,7 +318,6 @@
       box-sizing: border-box;
     }
 
-    /* Botão primário - Adicionar */
     .btn-primary {
       background: linear-gradient(135deg, var(--button-green) 0%, var(--button-light-green) 100%);
       color: var(--text-white);
@@ -355,7 +358,6 @@
       box-shadow: 0 2px 10px rgba(58, 175, 169, 0.3);
     }
 
-    /* Ícone para botões de adicionar */
     .btn-primary::after {
       content: '+';
       font-size: 1.2rem;
@@ -363,7 +365,6 @@
       margin-left: 4px;
     }
 
-    /* Botão de remoção - estilo minimalista e elegante */
     .btn-remove {
       background: var(--button-secondary);
       color: var(--button-danger);
@@ -388,7 +389,6 @@
       transform: translateY(0);
     }
 
-    /* Ícone para botões de remover */
     .btn-remove::before {
       content: '×';
       font-size: 1.1rem;
@@ -396,7 +396,6 @@
       margin-right: 4px;
     }
 
-    /* Botão principal - Enviar Tudo */
     .btn-enviar {
       width: 100%;
       margin-top: 40px;
@@ -441,7 +440,6 @@
       box-shadow: 0 6px 20px rgba(58, 175, 169, 0.4);
     }
 
-    /* Ícone para botão enviar */
     .btn-enviar::after {
       content: '→';
       font-size: 1.3rem;
@@ -454,7 +452,6 @@
       transform: translateX(4px);
     }
 
-    /* Container para botões de ação */
     .action-buttons {
       display: flex;
       flex-direction: column;
@@ -464,7 +461,6 @@
       box-sizing: border-box;
     }
 
-    /* Estilo para os itens de produto e programação - CORRIGIDO */
     .produto-item,
     .programacao-item {
       display: flex;
@@ -504,7 +500,6 @@
       margin-top: 0;
     }
 
-    /* Estilo especial para input de arquivo dentro dos produtos - CORRIGIDO */
     .produto-item .file-input-container {
       flex-grow: 1;
       margin-bottom: 0;
@@ -518,7 +513,6 @@
       max-width: 100%;
     }
 
-    /* Seções com títulos melhorados */
     h3 {
       color: var(--card-text-color);
       margin-top: 35px;
@@ -541,7 +535,6 @@
       border-radius: 2px;
     }
 
-    /* Melhorias nos status */
     .status {
       margin-top: 20px;
       font-weight: 500;
@@ -571,13 +564,181 @@
       border-color: var(--loading-color);
     }
 
-    /* Responsividade para dispositivos móveis - MELHORADA */
+    /* OVERLAYS CORRIGIDOS */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.98);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-radius: 20px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+      padding: 40px;
+      box-sizing: border-box;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .spinner {
+      width: 80px;
+      height: 80px;
+      border: 6px solid #e9ecef;
+      border-top: 6px solid var(--button-green);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 30px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 1.4rem;
+      color: var(--card-text-color);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .loading-subtext {
+      font-size: 1rem;
+      color: var(--info-text-color);
+      font-weight: 400;
+    }
+
+    /* Success Overlay */
+    .success-overlay {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    }
+
+    .success-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--success-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      animation: successPulse 0.6s ease-out;
+    }
+
+    .success-icon::before {
+      content: '✓';
+      font-size: 60px;
+      color: white;
+      font-weight: bold;
+    }
+
+    @keyframes successPulse {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .success-title {
+      font-size: 2rem;
+      color: var(--success-color);
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .success-message {
+      font-size: 1.2rem;
+      color: var(--card-text-color);
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    /* Error Overlay */
+    .error-overlay {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    }
+
+    .error-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--error-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      animation: errorShake 0.6s ease-out;
+    }
+
+    .error-icon::before {
+      content: '✕';
+      font-size: 60px;
+      color: white;
+      font-weight: bold;
+    }
+
+    @keyframes errorShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .error-title {
+      font-size: 2rem;
+      color: var(--error-color);
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .error-message {
+      font-size: 1.2rem;
+      color: var(--card-text-color);
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .overlay-button {
+      background: var(--button-green);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .overlay-button:hover {
+      background: var(--button-hover-green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(58, 175, 169, 0.4);
+    }
+
+    /* Responsividade */
     @media (max-width: 600px) {
       body {
         padding: 10px;
       }
 
-      .form-container {
+      .main-container {
         padding: 20px;
         margin: 0;
         max-width: 100%;
@@ -627,16 +788,28 @@
         font-size: 1rem;
       }
 
-      /* Garantir que nada saia do container */
+      .overlay {
+        padding: 20px;
+      }
+
+      .success-title,
+      .error-title {
+        font-size: 1.5rem;
+      }
+
+      .success-message,
+      .error-message {
+        font-size: 1rem;
+      }
+
       * {
         max-width: 100%;
         word-wrap: break-word;
       }
     }
 
-    /* Responsividade extra para telas muito pequenas */
     @media (max-width: 400px) {
-      .form-container {
+      .main-container {
         padding: 15px;
       }
 
@@ -657,7 +830,6 @@
       }
     }
 
-    /* Animações suaves para elementos dinâmicos */
     .produto-item,
     .programacao-item {
       animation: slideIn 0.3s ease-out;
@@ -677,80 +849,104 @@
 </head>
 
 <body>
-  <div class="form-container">
-    <div class="logo-container">
-      <img src="https://i.postimg.cc/D0r7ZyC5/LOGO-AGROPEC-VERDE2.png" alt="Logo Agropec">
+  <div class="main-container">
+    <!-- Conteúdo do formulário -->
+    <div class="form-content" id="formContent">
+      <div class="logo-container">
+        <img src="https://i.postimg.cc/D0r7ZyC5/LOGO-AGROPEC-VERDE2.png" alt="Logo Agropec">
+      </div>
+
+      <h1>Cadastro de Expositor</h1>
+
+      <label for="empresaNome">Nome da Empresa:</label>
+      <input type="text" id="empresaNome" placeholder="Agro Cangaia">
+
+      <label for="emailContato">Email para Contato:</label>
+      <input type="text" id="emailContato" placeholder="contato@empresa.com">
+
+      <label for="linkMaps">Link de Endereço do Google Maps:</label>
+      <input type="text" id="linkMaps" placeholder="https://maps.app.goo.gl/seu-endereco">
+
+      <label for="empresaDesc">Descrição:</label>
+      <textarea id="empresaDesc" rows="4" placeholder="Descrição da empresa"></textarea>
+
+      <label for="empresaTipo">Tipo:</label>
+      <select id="empresaTipo">
+        <option value="">Selecione o Tipo</option>
+        <option value="AGRICULTURA">AGRICULTURA</option>
+        <option value="TECNOLOGIA">TECNOLOGIA</option>
+        <option value="PECUARIA">PECUARIA</option>
+        <option value="BELEZA">BELEZA</option>
+        <option value="ALIMENTACAO">ALIMENTACAO</option>
+        <option value="MAQUINAS">MAQUINAS</option>
+        <option value="ARTESANATO">ARTESANATO</option>
+        <option value="MINERACAO">MINERACAO</option>
+      </select>
+
+      <label for="logoInput">Logo:</label>
+      <div class="file-input-container">
+        <input type="file" id="logoInput" accept="image/*">
+        <label for="logoInput" class="file-input-button" id="logoButton">
+          Escolher Logo
+        </label>
+        <div class="file-size-info">Tamanho máximo: 1MB</div>
+        <div class="file-name" id="logoFileName"></div>
+        <img id="logoPreview" style="max-width: 250px; display: none;" />
+      </div>
+
+      <label for="bannerInput">Banner:</label>
+      <div class="file-input-container">
+        <input type="file" id="bannerInput" accept="image/*">
+        <label for="bannerInput" class="file-input-button" id="bannerButton">
+          Escolher Banner
+        </label>
+        <div class="file-size-info">Tamanho máximo: 1MB</div>
+        <div class="file-name" id="bannerFileName"></div>
+      </div>
+
+      <h3>Produtos / Serviços</h3>
+      <div id="produtosContainer">
+        <!-- Inputs serão adicionados aqui ao clicar -->
+      </div>
+      <div class="action-buttons">
+        <button type="button" onclick="adicionarProduto()" class="btn-primary">Adicionar Produto / Serviço</button>
+      </div>
+
+      <h3>Programações</h3>
+      <div id="programacoesContainer" class="programacoes-container">
+        <!-- Programações dinâmicas serão inseridas aqui -->
+      </div>
+      <div class="action-buttons">
+        <button type="button" onclick="adicionarProgramacao()" class="btn-primary">Adicionar Programação</button>
+      </div>
+
+      <button type="button" onclick="enviar()" class="btn-enviar">Enviar Tudo</button>
+
+      <div id="status" class="status"></div>
     </div>
 
-    <h1>Cadastro de Expositor</h1>
-
-    <label for="empresaNome">Nome da Empresa:</label>
-    <input type="text" id="empresaNome" placeholder="Agro Cangaia">
-
-    <!-- NOVOS CAMPOS ADICIONADOS AQUI -->
-    <label for="emailContato">Email para Contato:</label>
-    <input type="text" id="emailContato" placeholder="contato@empresa.com">
-
-    <label for="linkMaps">Link de Endereço do Google Maps:</label>
-    <input type="text" id="linkMaps" placeholder="https://maps.app.goo.gl/seu-endereco">
-    <!-- FIM DOS NOVOS CAMPOS -->
-
-    <label for="empresaDesc">Descrição:</label>
-    <textarea id="empresaDesc" rows="4" placeholder="Descrição da empresa"></textarea>
-
-    <label for="empresaTipo">Tipo:</label>
-    <select id="empresaTipo">
-      <option value="">Selecione o Tipo</option>
-      <option value="AGRICULTURA">AGRICULTURA</option>
-      <option value="TECNOLOGIA">TECNOLOGIA</option>
-      <option value="PECUARIA">PECUARIA</option>
-      <option value="BELEZA">BELEZA</option>
-      <option value="ALIMENTACAO">ALIMENTACAO</option>
-      <option value="MAQUINAS">MAQUINAS</option>
-      <option value="ARTESANATO">ARTESANATO</option>
-      <option value="MINERACAO">MINERACAO</option>
-    </select>
-
-    <label for="logoInput">Logo:</label>
-    <div class="file-input-container">
-      <input type="file" id="logoInput" accept="image/*">
-      <label for="logoInput" class="file-input-button" id="logoButton">
-        Escolher Logo
-      </label>
-      <div class="file-size-info">Tamanho máximo: 1MB</div>
-      <div class="file-name" id="logoFileName"></div>
-      <img id="logoPreview" style="max-width: 250px; align-items: center;" />
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="overlay loading-overlay">
+      <div class="spinner"></div>
+      <div class="loading-text" id="loadingText">Enviando dados para a Agropec...</div>
+      <div class="loading-subtext" id="loadingSubtext">Por favor, aguarde...</div>
     </div>
 
-    <label for="bannerInput">Banner:</label>
-    <div class="file-input-container">
-      <input type="file" id="bannerInput" accept="image/*">
-      <label for="bannerInput" class="file-input-button" id="bannerButton">
-        Escolher Banner
-      </label>
-      <div class="file-size-info">Tamanho máximo: 1MB</div>
-      <div class="file-name" id="bannerFileName"></div>
+    <!-- Success Overlay -->
+    <div id="successOverlay" class="overlay success-overlay">
+      <div class="success-icon"></div>
+      <div class="success-title">Cadastro Realizado!</div>
+      <div class="success-message">Parabéns! Seu expositor foi cadastrado com sucesso na Agropec 2025.</div>
+      <button class="overlay-button" onclick="resetForm()">Fazer Novo Cadastro</button>
     </div>
 
-    <h3>Produtos / Serviços</h3>
-    <div id="produtosContainer">
-      <!-- Inputs serão adicionados aqui ao clicar -->
+    <!-- Error Overlay -->
+    <div id="errorOverlay" class="overlay error-overlay">
+      <div class="error-icon"></div>
+      <div class="error-title" id="errorTitle">Erro no Cadastro!</div>
+      <div class="error-message" id="errorMessage">Ocorreu um erro ao enviar seus dados. Por favor, tente novamente.</div>
+      <button class="overlay-button" onclick="resetForm()">Tentar Novamente</button>
     </div>
-    <div class="action-buttons">
-      <button type="button" onclick="adicionarProduto()" class="btn-primary">Adicionar Produto / Serviço</button>
-    </div>
-
-    <h3>Programações</h3>
-    <div id="programacoesContainer" class="programacoes-container">
-      <!-- Programações dinâmicas serão inseridas aqui -->
-    </div>
-    <div class="action-buttons">
-      <button type="button" onclick="adicionarProgramacao()" class="btn-primary">Adicionar Programação</button>
-    </div>
-
-    <button type="button" onclick="enviar()" class="btn-enviar">Enviar Tudo</button>
-
-    <div id="status" class="status"></div>
   </div>
 
   <script>
@@ -760,6 +956,74 @@
 
     let produtoCounter = 0;
     const MAX_FILE_SIZE = 1024 * 1024; // 1MB em bytes
+
+    // Elementos do DOM
+    const formContent = document.getElementById('formContent');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const successOverlay = document.getElementById('successOverlay');
+    const errorOverlay = document.getElementById('errorOverlay');
+
+    // Função para mostrar overlay
+    function showOverlay(overlayType, message = '', subMessage = '') {
+      // Esconder formulário
+      formContent.classList.add('hidden');
+      
+      // Esconder todos os overlays
+      hideAllOverlays();
+      
+      // Mostrar o overlay específico
+      if (overlayType === 'loading') {
+        if (message) document.getElementById('loadingText').textContent = message;
+        if (subMessage) document.getElementById('loadingSubtext').textContent = subMessage;
+        loadingOverlay.classList.add('show');
+      } else if (overlayType === 'success') {
+        successOverlay.classList.add('show');
+      } else if (overlayType === 'error') {
+        if (message) document.getElementById('errorTitle').textContent = message;
+        if (subMessage) document.getElementById('errorMessage').textContent = subMessage;
+        errorOverlay.classList.add('show');
+      }
+    }
+
+    // Função para esconder todos os overlays
+    function hideAllOverlays() {
+      loadingOverlay.classList.remove('show');
+      successOverlay.classList.remove('show');
+      errorOverlay.classList.remove('show');
+    }
+
+    // Função para resetar o formulário
+    function resetForm() {
+      // Esconder overlays
+      hideAllOverlays();
+      
+      // Mostrar formulário
+      formContent.classList.remove('hidden');
+      
+      // Limpar campos
+      document.getElementById("empresaNome").value = "";
+      document.getElementById("emailContato").value = "";
+      document.getElementById("linkMaps").value = "";
+      document.getElementById("empresaDesc").value = "";
+      document.getElementById("empresaTipo").value = "";
+      
+      // Limpar arquivos
+      document.getElementById("logoInput").value = "";
+      document.getElementById("bannerInput").value = "";
+      document.getElementById("logoPreview").style.display = 'none';
+      
+      // Resetar botões de arquivo
+      updateFileButton(document.getElementById('logoInput'), document.getElementById('logoButton'), document.getElementById('logoFileName'));
+      updateFileButton(document.getElementById('bannerInput'), document.getElementById('bannerButton'), document.getElementById('bannerFileName'));
+      
+      // Limpar produtos e programações
+      document.getElementById("produtosContainer").innerHTML = "";
+      document.getElementById("programacoesContainer").innerHTML = "";
+      produtoCounter = 0;
+      
+      // Limpar status
+      document.getElementById("status").innerHTML = "";
+    }
 
     // Função para validar tamanho do arquivo
     function validateFileSize(file) {
@@ -776,28 +1040,27 @@
     }
 
     function showImagePreview(input, imgElementId) {
-    const file = input.files[0];
-    const imgElement = document.getElementById(imgElementId);
+      const file = input.files[0];
+      const imgElement = document.getElementById(imgElementId);
       if (file) {
         const reader = new FileReader();
         reader.onload = function (e) {
-        imgElement.src = e.target.result;
-        imgElement.style.display = 'block';
-    };
-      reader.readAsDataURL(file);
-    } else {
-      imgElement.src = '';
-      imgElement.style.display = 'none';
+          imgElement.src = e.target.result;
+          imgElement.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        imgElement.src = '';
+        imgElement.style.display = 'none';
+      }
     }
-  }
 
-    // Função para atualizar o visual do botão de arquivo com validação de tamanho
+    // Função para atualizar o visual do botão de arquivo
     function updateFileButton(input, button, fileName) {
       const file = input.files[0];
       if (file) {
         const isValidSize = validateFileSize(file);
         
-        // Remove todas as classes de estado
         button.classList.remove('has-file', 'file-too-large');
         
         if (isValidSize) {
@@ -812,7 +1075,6 @@
           fileName.textContent = `❌ Arquivo muito grande: ${file.name} (${formatFileSize(file.size)}). Máximo permitido: 1MB`;
           fileName.style.color = 'var(--error-color)';
           
-          // Limpar o input para forçar nova seleção
           setTimeout(() => {
             input.value = '';
             button.classList.remove('file-too-large');
@@ -829,16 +1091,15 @@
       }
     }
 
-    // Event listeners para os inputs de arquivo principais
+    // Event listeners para os inputs de arquivo
     document.getElementById('logoInput').addEventListener('change', function () {
-  updateFileButton(this, document.getElementById('logoButton'), document.getElementById('logoFileName'));
-  showImagePreview(this, 'logoPreview');
-});
+      updateFileButton(this, document.getElementById('logoButton'), document.getElementById('logoFileName'));
+      showImagePreview(this, 'logoPreview');
+    });
 
-document.getElementById('bannerInput').addEventListener('change', function () {
-  updateFileButton(this, document.getElementById('bannerButton'), document.getElementById('bannerFileName'));
-  showImagePreview(this, 'bannerPreview');
-});
+    document.getElementById('bannerInput').addEventListener('change', function () {
+      updateFileButton(this, document.getElementById('bannerButton'), document.getElementById('bannerFileName'));
+    });
 
     // Salvar textos originais dos botões
     document.getElementById('logoButton').setAttribute('data-original-text', 'Escolher Logo');
@@ -867,7 +1128,6 @@ document.getElementById('bannerInput').addEventListener('change', function () {
       `;
       container.appendChild(div);
 
-      // Adicionar event listener para o novo input com validação
       document.getElementById(fileInputId).addEventListener('change', function() {
         updateFileButton(this, document.getElementById(buttonId), document.getElementById(fileNameId));
       });
@@ -891,29 +1151,23 @@ document.getElementById('bannerInput').addEventListener('change', function () {
       div.innerText = message;
     }
 
-    // Função para validar todos os arquivos antes do envio
+    // Função para validar todos os arquivos
     function validateAllFiles() {
       const logoFile = document.getElementById("logoInput").files[0];
       const bannerFile = document.getElementById("bannerInput").files[0];
       const produtoInputs = document.getElementsByClassName("produtoInput");
 
-      // Validar logo
       if (logoFile && !validateFileSize(logoFile)) {
-        showStatus(`❌ Logo muito grande (${formatFileSize(logoFile.size)}). Máximo permitido: 1MB`, 'error');
         return false;
       }
 
-      // Validar banner
       if (bannerFile && !validateFileSize(bannerFile)) {
-        showStatus(`❌ Banner muito grande (${formatFileSize(bannerFile.size)}). Máximo permitido: 1MB`, 'error');
         return false;
       }
 
-      // Validar produtos
       for (let i = 0; i < produtoInputs.length; i++) {
         const file = produtoInputs[i].files[0];
         if (file && !validateFileSize(file)) {
-          showStatus(`❌ Produto ${i + 1} muito grande (${formatFileSize(file.size)}). Máximo permitido: 1MB`, 'error');
           return false;
         }
       }
@@ -956,33 +1210,38 @@ document.getElementById('bannerInput').addEventListener('change', function () {
       return JSON.parse(text);
     }
 
+    // Função principal de envio
     async function enviar() {
       try {
         const empresaNome = document.getElementById("empresaNome").value.trim();
         const empresaDesc = document.getElementById("empresaDesc").value.trim();
         const empresaTipo = document.getElementById("empresaTipo").value.trim();
-        const emailContato = document.getElementById("emailContato").value.trim(); // Novo campo
-        const linkMaps = document.getElementById("linkMaps").value.trim(); // Novo campo
+        const emailContato = document.getElementById("emailContato").value.trim();
+        const linkMaps = document.getElementById("linkMaps").value.trim();
 
+        // Validação de campos obrigatórios
         if (!empresaNome || !empresaDesc || !empresaTipo) {
-          showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
+          showOverlay('error', 'Campos Obrigatórios!', 'Por favor, preencha todos os campos obrigatórios antes de continuar.');
           return;
         }
 
-        // VALIDAÇÃO DE TAMANHO DOS ARQUIVOS ANTES DO ENVIO
+        // Validação de arquivos
         if (!validateAllFiles()) {
-          return; // Para a execução se algum arquivo for muito grande
+          showOverlay('error', 'Arquivo Muito Grande!', 'Um ou mais arquivos excedem o tamanho máximo permitido de 1MB.');
+          return;
         }
 
         const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
         const uploadPromises = [];
-        const produtosNomes = [];
 
         const logoFile = document.getElementById("logoInput").files[0];
         const bannerFile = document.getElementById("bannerInput").files[0];
-
         const empresaFolder = `Exhibitors/${empresaId}/`;
 
+        // Mostrar loading
+        showOverlay('loading', 'Enviando arquivos...', 'Fazendo upload das imagens para a Agropec');
+
+        // Preparar uploads
         if (logoFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(logoFile, `${empresaFolder}logo.png`));
         if (bannerFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(bannerFile, `${empresaFolder}banner.png`));
 
@@ -991,21 +1250,17 @@ document.getElementById('bannerInput').addEventListener('change', function () {
           const file = produtoInputs[i].files[0];
           if (file) {
             const nomeArquivo = `product_${i + 1}.png`;
-            produtosNomes.push(nomeArquivo);
             uploadPromises.push(enviarArquivoParaLambdaOriginal(file, `${empresaFolder}${nomeArquivo}`));
           }
         }
 
-        showStatus("📤 Enviando arquivos para a Agropec...", 'loading');
+        // Upload de imagens
         const imageUploadResults = await Promise.allSettled(uploadPromises);
-        imageUploadResults.forEach((result, index) => {
-            if (result.status === 'fulfilled') {
-                console.log(`Upload de imagem ${index + 1} SUCESSO:`, result.value);
-            } else {
-                console.error(`Upload de imagem ${index + 1} FALHA:`, result.reason);
-            }
-        });
+        
+        // Atualizar loading
+        showOverlay('loading', 'Processando dados...', 'Enviando informações do expositor');
 
+        // Preparar programações
         const horarios = document.getElementsByClassName("programacaoHorario");
         const titulos = document.getElementsByClassName("programacaoTitulo");
         const programacoes = [];
@@ -1018,39 +1273,34 @@ document.getElementById('bannerInput').addEventListener('change', function () {
           }
         }
 
+        // Preparar payload
         const content = {
-              nome: empresaNome,
-              id: empresaId,
-              estande: {
-                nome: empresaNome,
-                description: empresaDesc,
-                type: empresaTipo,
-                banner: null,
-                logo: null,
-                bannerBase64: null,
-                logoBase64: null,
-                programacoes,
-                servicos: []
-              },
-              emailContact: null, // Adicionado ao payload
-              locationLink: null // Adicionado ao payload
-            };
+          nome: empresaNome,
+          id: empresaId,
+          estande: {
+            nome: empresaNome,
+            description: empresaDesc,
+            type: empresaTipo,
+            banner: null,
+            logo: null,
+            bannerBase64: null,
+            logoBase64: null,
+            programacoes,
+            servicos: []
+          },
+          emailContact: null,
+          locationLink: null
+        };
 
-        console.log("Payload do content.json:", JSON.stringify(content, null, 2));
-
-        showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
-        try {
-            const jsonResult = await enviarJsonParaLambdaOriginal(content);
-            console.log("Envio do content.json SUCESSO:", jsonResult);
-            showStatus("✅ Cadastro enviado com sucesso para a Agropec!", 'success');
-        } catch (jsonError) {
-            console.error("Envio do content.json FALHA:", jsonError);
-            showStatus(`❌ Erro ao enviar dados do expositor: ${jsonError.message}`, 'error');
-        }
+        // Enviar dados
+        const jsonResult = await enviarJsonParaLambdaOriginal(content);
+        
+        // Sucesso!
+        showOverlay('success');
 
       } catch (err) {
         console.error("Erro geral no envio:", err);
-        showStatus(`❌ Erro: ${err.message}`, 'error');
+        showOverlay('error', 'Erro Inesperado!', `Ocorreu um erro durante o envio: ${err.message}`);
       }
     }
   </script>
