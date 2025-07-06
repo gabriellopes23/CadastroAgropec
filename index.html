@@ -171,6 +171,7 @@
     }
 
     input[type="text"],
+    input[type="date"],
     textarea {
       width: 100%;
       padding: 8px 0;
@@ -186,6 +187,7 @@
     }
 
     input[type="text"]:focus,
+    input[type="date"]:focus,
     textarea:focus {
       outline: none;
       border-bottom-color: var(--input-focus-color);
@@ -1153,7 +1155,6 @@
             <div class="help-image-caption">Tela principal do expositor no app</div>
           </div>
           <div class="help-image-container">
-            
             <img src="https://i.postimg.cc/R0vPw3cW/Whats-App-Image-2025-07-06-at-10-39-26.jpg" alt="Exemplo do App - Tela Detalhada">
             <div class="help-image-caption">Tela detalhada com programações</div>
           </div>
@@ -1204,7 +1205,7 @@
 
           <div class="help-field">
             <div class="help-field-name">Programações</div>
-            <div class="help-field-desc">Lista de eventos, palestras, demonstrações ou atividades que sua empresa realizará durante o evento. Inclua horário e título de cada atividade. Exemplo: "9.00 - Abertura", "13/07/2025 - Demonstração tecnológica".</div>
+            <div class="help-field-desc">Lista de eventos, palestras, demonstrações ou atividades que sua empresa realizará durante o evento. Agora inclui data, horário e título de cada atividade. Exemplo: "13/07/2025 - 9:00 - Abertura", "14/07/2025 - 14:00 - Demonstração tecnológica".</div>
           </div>
         </div>
 
@@ -1215,7 +1216,7 @@
               <strong>Tamanho das Imagens:</strong> Todas as imagens devem ter no máximo 1MB.<br>
               <strong>Qualidade:</strong> Use imagens de boa qualidade para uma melhor apresentação no app.<br>
               <strong>Campos Obrigatórios:</strong> Nome da Empresa, Descrição e Tipo são obrigatórios.<br>
-              <strong>Programações:</strong> Adicione quantas programações desejar para manter os visitantes informados sobre suas atividades.
+              <strong>Programações:</strong> Agora você pode especificar data, horário e título para cada programação. Adicione quantas desejar para manter os visitantes informados sobre suas atividades.
             </p>
           </div>
         </div>
@@ -1453,7 +1454,8 @@
       const div = document.createElement("div");
       div.className = 'programacao-item';
       div.innerHTML = `
-        <input type="text" placeholder="Horário (ex: 9.00)" class="programacaoHorario" required>
+        <input type="date" placeholder="Data" class="programacaoData" required>
+        <input type="text" placeholder="Horário (ex: 9:00)" class="programacaoHorario" required>
         <input type="text" placeholder="Título da Programação" class="programacaoTitulo" required>
         <button type="button" onclick="this.parentElement.remove()" class="btn-remove">Remover</button>
       `;
@@ -1575,16 +1577,24 @@
         // Atualizar loading
         showOverlay('loading', 'Processando dados...', 'Enviando informações do expositor');
 
-        // Preparar programações
+        // Preparar programações com data, horário e título
+        const datas = document.getElementsByClassName("programacaoData");
         const horarios = document.getElementsByClassName("programacaoHorario");
         const titulos = document.getElementsByClassName("programacaoTitulo");
         const programacoes = [];
 
-        for (let i = 0; i < horarios.length; i++) {
+        for (let i = 0; i < datas.length; i++) {
+          const data = datas[i].value.trim();
           const horario = horarios[i].value.trim();
           const titulo = titulos[i].value.trim();
-          if (horario && titulo) {
-            programacoes.push({ horario, titulo, data: "13/07/2025" });
+          if (data && horario && titulo) {
+            // Converter data do formato YYYY-MM-DD para DD/MM/YYYY
+            const dataFormatada = data.split('-').reverse().join('/');
+            programacoes.push({ 
+              data: dataFormatada, 
+              horario, 
+              titulo 
+            });
           }
         }
 
