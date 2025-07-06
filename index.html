@@ -22,239 +22,289 @@
   <!-- Fim da importação da fonte -->
 
   <style>
+    /* Cores da paleta Agropec */
+    :root {
+      --bg-dark-green: #1E4844;
+      --input-bg-dark-green: #2E6E65;
+      --border-dark-green: #1B3F3B;
+      --button-green: #3AAFA9;
+      --button-hover-green: #2c8b87;
+      --text-white: white;
+      --placeholder-color: #b3d2cd;
+      --error-color: #ff6b6b;
+      --error-bg: #2c1515;
+      --success-color: #51cf66;
+      --success-bg: #1a2e1a;
+      --loading-color: #ffd43b;
+      --loading-bg: #2e2a1a;
+      --card-bg: white; /* Cor de fundo do card principal */
+      --card-text-color: #333; /* Cor do texto dentro do card */
+      --input-line-color: #ccc; /* Cor da linha dos inputs */
+      --input-focus-color: #3AAFA9; /* Cor da linha dos inputs ao focar */
+    }
+
     body {
       font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-dark-green );
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Ocupa a altura total da viewport */
+      margin: 0;
       padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      background-color: #1E4844;
-      color: white;
+      box-sizing: border-box;
     }
 
-    /* Estilos gerais para inputs, botões, textarea e select */
-    input,
-    button,
-    textarea,
-    select {
-      margin-top: 10px;
-      display: block;
+    .form-container {
+      background-color: var(--card-bg);
+      color: var(--card-text-color);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      max-width: 500px; /* Ajuste a largura máxima do card */
       width: 100%;
       box-sizing: border-box;
-      font-size: 1rem;
-      padding: 8px;
-      border-radius: 4px;
-      border: none;
+      position: relative; /* Para posicionar o X de fechar se necessário */
     }
 
-    /* Estilos para inputs de texto e textarea */
+    h1 {
+      text-align: center;
+      color: var(--card-text-color);
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      max-width: 180px; /* Ajuste o tamanho da logo dentro do card */
+      height: auto;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    /* Linha decorativa abaixo da logo */
+    .logo-container::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 2px;
+      background-color: var(--button-green);
+      margin: 10px auto 30px auto;
+      border-radius: 2px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 20px; /* Mais espaço acima das labels */
+      margin-bottom: 5px; /* Espaço abaixo das labels */
+      display: block;
+      color: var(--card-text-color);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
     input[type="text"],
-    input[type="file"], /* Incluindo inputs de arquivo para consistência visual */
-    textarea {
-      background-color: #2E6E65;
-      color: white;
-      border: 1px solid #1B3F3B;
-      /* Remover a seta (arrow ) de todos os inputs e textareas */
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
+    textarea,
+    input[type="file"] {
+      width: 100%;
+      padding: 8px 0; /* Padding vertical */
+      border: none;
+      border-bottom: 1px solid var(--input-line-color); /* Linha inferior */
+      background-color: transparent; /* Fundo transparente */
+      color: var(--card-text-color);
+      font-size: 1rem;
+      margin-top: 0; /* Remove margin-top padrão */
+      margin-bottom: 20px; /* Espaço abaixo do input */
+      transition: border-color 0.3s ease;
     }
 
-    /* Estilos específicos para o select (com a seta) */
-    select {
-      background-color: #2E6E65;
-      color: white;
-      border: 1px solid #1B3F3B;
-      /* Manter a seta apenas no select */
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20256%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M208.5%2096.5L128%20177l-80.5-80.5z%22%2F%3E%3C%2Fsvg%3E' );
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      background-size: 1em;
-      padding-right: 2em; /* Espaço para a seta */
-    }
-
-    /* Estilo para as opções do select */
-    select option {
-        background-color: #2E6E65; /* Cor de fundo das opções */
-        color: white; /* Cor do texto das opções */
+    input[type="text"]:focus,
+    textarea:focus,
+    input[type="file"]:focus {
+      outline: none;
+      border-bottom-color: var(--input-focus-color); /* Cor da linha ao focar */
     }
 
     input::placeholder,
     textarea::placeholder {
-      color: #b3d2cd;
+      color: var(--placeholder-color);
     }
 
+    /* Estilos para o select (com a seta) */
+    select {
+      width: 100%;
+      padding: 8px 0;
+      border: none;
+      border-bottom: 1px solid var(--input-line-color);
+      background-color: transparent;
+      color: var(--card-text-color);
+      font-size: 1rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20256%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M208.5%2096.5L128%20177l-80.5-80.5z%22%2F%3E%3C%2Fsvg%3E' ); /* Seta preta para fundo branco */
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 1em;
+      padding-right: 2em;
+      border-radius: 0; /* Remove border-radius para alinhar com a linha */
+    }
+
+    select option {
+        background-color: var(--card-bg); /* Cor de fundo das opções */
+        color: var(--card-text-color); /* Cor do texto das opções */
+    }
+
+    /* Estilos para os botões de adicionar/remover */
     button {
-      background-color: #3AAFA9;
-      color: white;
+      background-color: var(--button-green);
+      color: var(--text-white);
       font-weight: bold;
       cursor: pointer;
       border: none;
       transition: background-color 0.3s ease;
+      border-radius: 4px;
+      padding: 8px 12px;
+      width: auto; /* Para botões de adicionar/remover */
     }
 
     button:hover {
-      background-color: #2c8b87;
+      background-color: var(--button-hover-green);
     }
 
     /* Estilo para os itens de produto e programação (para alinhar input e botão) */
     .produto-item,
     .programacao-item {
-      display: flex; /* Usa flexbox para alinhar */
-      align-items: center; /* Alinha verticalmente */
-      gap: 10px; /* Espaço entre os itens */
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 10px;
     }
 
     .produto-item input,
     .programacao-item input {
-      flex-grow: 1; /* Faz o input ocupar o espaço restante */
-      margin-top: 0; /* Remove margin-top padrão para alinhar */
+      flex-grow: 1;
+      margin-top: 0;
+      margin-bottom: 0; /* Remove margin-bottom para alinhar */
     }
 
     .produto-item button,
     .programacao-item button {
-      flex-shrink: 0; /* Impede o botão de encolher */
-      width: auto; /* Largura automática para o botão */
-      margin-top: 0; /* Remove margin-top padrão para alinhar */
-      padding: 8px 12px; /* Ajusta o padding do botão */
+      flex-shrink: 0;
+      margin-top: 0;
     }
 
-    label {
-      font-weight: bold;
-      margin-top: 15px;
-      display: block;
-    }
-
-    .programacao-item input {
-      width: auto; /* Sobrescreve o width: 48% anterior */
-    }
-
-    .programacoes-container {
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
-
-    /* Logo container */
-    .logo-container {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .logo-container img {
-      max-width: 250px;
-      height: auto;
-      display: inline-block;
-    }
-
-    /* Scrollbar para textarea e inputs, se quiser */
-    textarea,
-    input[type="text"] {
-      resize: vertical;
-    }
-
-    .error {
-      color: #ff6b6b;
-      background-color: #2c1515;
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
-    }
-
-    .success {
-      color: #51cf66;
-      background-color: #1a2e1a;
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
-    }
-
-    .loading {
-      color: #ffd43b;
-      background-color: #2e2a1a;
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
+    h3 {
+      color: var(--card-text-color);
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
     }
 
     /* Estilo para o botão Enviar Tudo */
     .btn-enviar {
-      margin-top: 30px; /* Mais espaço acima */
-      padding: 15px 25px; /* Padding maior */
-      font-size: 1.2rem; /* Fonte maior */
-      border-radius: 8px; /* Bordas mais arredondadas */
-      background-color: #3AAFA9; /* Cor principal */
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra para destaque */
-      transition: all 0.3s ease; /* Transição suave para hover */
-      letter-spacing: 1px; /* Espaçamento entre letras */
-      text-transform: uppercase; /* Texto em maiúsculas */
+      width: 100%; /* Ocupa a largura total */
+      margin-top: 40px; /* Mais espaço acima */
+      padding: 15px 25px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      background-color: var(--button-green); /* Cor principal */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     .btn-enviar:hover {
-      background-color: #2c8b87; /* Cor mais escura no hover */
-      transform: translateY(-2px); /* Leve levantamento no hover */
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Sombra mais pronunciada */
+      background-color: var(--button-hover-green);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .status {
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .error {
+      color: var(--error-color);
+      background-color: var(--error-bg);
+    }
+
+    .success {
+      color: var(--success-color);
+      background-color: var(--success-bg);
+    }
+
+    .loading {
+      color: var(--loading-color);
+      background-color: var(--loading-bg);
     }
   </style>
 </head>
 
 <body>
-  <div class="logo-container">
-    <img src="https://i.postimg.cc/xqrqcZbt/logo-agropec.png"
-       alt="Logo Agropec" style="background-color: transparent; max-width: 350px; height: auto;">
+  <div class="form-container">
+    <div class="logo-container">
+      <img src="https://i.postimg.cc/xqrqcZbt/logo-agropec.png" alt="Logo Agropec">
+    </div>
+
+    <h1>Cadastro de Expositor</h1>
+    <!-- Removido o texto de introdução para um visual mais limpo -->
+
+    <label for="empresaNome">Nome da Empresa:</label>
+    <input type="text" id="empresaNome" placeholder="Agro Cangaia">
+
+    <label for="empresaDesc">Descrição:</label>
+    <textarea id="empresaDesc" rows="4" placeholder="Descrição da empresa"></textarea>
+
+    <label for="empresaTipo">Tipo:</label>
+    <select id="empresaTipo">
+      <option value="">Selecione o Tipo</option>
+      <option value="AGRICULTURA">AGRICULTURA</option>
+      <option value="TECNOLOGIA">TECNOLOGIA</option>
+      <option value="PECUARIA">PECUARIA</option>
+      <option value="BELEZA">BELEZA</option>
+      <option value="ALIMENTACAO">ALIMENTACAO</option>
+      <option value="MAQUINAS">MAQUINAS</option>
+      <option value="ARTESANATO">ARTESANATO</option>
+      <option value="MINERACAO">MINERACAO</option>
+    </select>
+
+    <label for="logoInput">Logo:</label>
+    <input type="file" id="logoInput" accept="image/*">
+
+    <label for="bannerInput">Banner:</label>
+    <input type="file" id="bannerInput" accept="image/*">
+
+    <label>Produtos / Serviços</label>
+    <div id="produtosContainer">
+      <!-- Inputs serão adicionados aqui ao clicar -->
+    </div>
+    <button type="button" onclick="adicionarProduto( )">Adicionar Produto / Serviço</button>
+
+    <h3>Programações</h3>
+    <div id="programacoesContainer" class="programacoes-container">
+      <!-- Programações dinâmicas serão inseridas aqui -->
+    </div>
+    <button type="button" onclick="adicionarProgramacao()">Adicionar Programação</button>
+
+    <button type="button" onclick="enviar()" class="btn-enviar">Enviar Tudo</button>
+
+    <div id="status" class="status"></div>
   </div>
 
-  <h1>Cadastro de Expositor - Agropec 2025</h1>
-  <p>
-    Preencha este formulário com as informações da sua empresa para exibição no aplicativo oficial da Agropec 2025.<br>
-      Os dados fornecidos serão utilizados para compor a página do expositor dentro do app, incluindo descrição, programação e produtos/serviços.<br>
-      Caso tenha dúvidas ou queira alterar alguma informação posteriormente, entre em contato com nossa equipe de suporte técnico.
-  </p>
-
-  <label>Nome da Empresa:</label>
-  <input type="text" id="empresaNome" placeholder="ex: Agro Cangaia">
-
-  <label>Descrição:</label>
-  <textarea id="empresaDesc" rows="4" placeholder="Descrição da empresa"></textarea>
-
-  <label>Tipo:</label>
-  <select id="empresaTipo">
-    <option value="">Selecione o Tipo</option> <!-- Opção padrão -->
-    <option value="AGRICULTURA">AGRICULTURA</option>
-    <option value="TECNOLOGIA">TECNOLOGIA</option>
-    <option value="PECUARIA">PECUARIA</option>
-    <option value="BELEZA">BELEZA</option>
-    <option value="ALIMENTACAO">ALIMENTACAO</option>
-    <option value="MAQUINAS">MAQUINAS</option>
-    <option value="ARTESANATO">ARTESANATO</option>
-    <option value="MINERACAO">MINERACAO</option>
-  </select>
-
-  <label>Logo:</label>
-  <input type="file" id="logoInput" accept="image/*">
-
-  <label>Banner:</label>
-  <input type="file" id="bannerInput" accept="image/*">
-
-  <label>Produtos / Serviços</label>
-  <div id="produtosContainer">
-    <!-- Inputs serão adicionados aqui ao clicar -->
-  </div>
-  <button type="button" onclick="adicionarProduto( )">Adicionar Produto / Serviço</button>
-
-  <h3>Programações</h3>
-  <div id="programacoesContainer" class="programacoes-container">
-    <!-- Programações dinâmicas serão inseridas aqui -->
-  </div>
-  <button type="button" onclick="adicionarProgramacao()">Adicionar Programação</button>
-
-  <button type="button" onclick="enviar()" class="btn-enviar">Enviar Tudo</button>
-
-  <div id="status" style="margin-top: 20px; font-weight: bold;"></div>
-
-<script>
+  <script>
     const BASE_URL = 'https://4n2wbzfpwjhw7boo2eak3caehy0hylmz.lambda-url.sa-east-1.on.aws';
     const uploadImageUrl = `${BASE_URL}?action=uploadImage`; // URL para upload de imagens
     const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`; // URL para salvar o content.json
