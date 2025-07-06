@@ -719,6 +719,7 @@
       </label>
       <div class="file-size-info">Tamanho máximo: 1MB</div>
       <div class="file-name" id="logoFileName"></div>
+      <img id="logoPreview" style="max-width: 100%; margin-top: 10px; display: none; border-radius: 8px;" />
     </div>
 
     <label for="bannerInput">Banner:</label>
@@ -774,6 +775,22 @@
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
+    function showImagePreview(input, imgElementId) {
+    const file = input.files[0];
+    const imgElement = document.getElementById(imgElementId);
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+        imgElement.src = e.target.result;
+        imgElement.style.display = 'block';
+    };
+      reader.readAsDataURL(file);
+    } else {
+      imgElement.src = '';
+      imgElement.style.display = 'none';
+    }
+  }
+
     // Função para atualizar o visual do botão de arquivo com validação de tamanho
     function updateFileButton(input, button, fileName) {
       const file = input.files[0];
@@ -813,13 +830,15 @@
     }
 
     // Event listeners para os inputs de arquivo principais
-    document.getElementById('logoInput').addEventListener('change', function() {
-      updateFileButton(this, document.getElementById('logoButton'), document.getElementById('logoFileName'));
-    });
+    document.getElementById('logoInput').addEventListener('change', function () {
+  updateFileButton(this, document.getElementById('logoButton'), document.getElementById('logoFileName'));
+  showImagePreview(this, 'logoPreview');
+});
 
-    document.getElementById('bannerInput').addEventListener('change', function() {
-      updateFileButton(this, document.getElementById('bannerButton'), document.getElementById('bannerFileName'));
-    });
+document.getElementById('bannerInput').addEventListener('change', function () {
+  updateFileButton(this, document.getElementById('bannerButton'), document.getElementById('bannerFileName'));
+  showImagePreview(this, 'bannerPreview');
+});
 
     // Salvar textos originais dos botões
     document.getElementById('logoButton').setAttribute('data-original-text', 'Escolher Logo');
