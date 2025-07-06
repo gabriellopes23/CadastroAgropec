@@ -38,7 +38,7 @@
       --success-bg: #1a2e1a;
       --loading-color: #ffd43b;
       --loading-bg: #2e2a1a;
-      --card-bg: rgba(255, 255, 255, 0.826);
+      --card-bg: rgba(255, 255, 255, 0.934);
       --card-text-color: #333;
       --input-line-color: #ccc;
       --input-focus-color: #3AAFA9;
@@ -82,6 +82,16 @@
       width: 100%;
       box-sizing: border-box;
       position: relative;
+      transition: opacity 0.5s ease, height 0.5s ease, padding 0.5s ease;
+    }
+
+    /* Esconder o formulário quando um overlay estiver ativo */
+    .form-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+      overflow: hidden;
+      padding: 0;
     }
 
     h1 {
@@ -98,7 +108,7 @@
     }
 
     .logo-container img {
-      max-width: 180px;
+      max-width: 280px;
       height: auto;
       display: inline-block;
       margin-bottom: 10px;
@@ -571,6 +581,188 @@
       border-color: var(--loading-color);
     }
 
+    /* Estilos para os Overlays (Loading, Sucesso, Erro) */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.95); /* Fundo semi-transparente */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-radius: 20px;
+      z-index: 10; /* Acima do formulário */
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Spinner de Loading */
+    .spinner {
+      border: 8px solid rgba(0, 0, 0, 0.1);
+      border-top: 8px solid var(--button-green);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #loadingMessage {
+      font-size: 1.2rem;
+      color: var(--card-text-color);
+      font-weight: 600;
+    }
+
+    /* Animação de Sucesso */
+    .success-overlay {
+      background-color: var(--success-bg);
+      color: var(--success-color);
+    }
+
+    .success-overlay h2 {
+      color: var(--success-color);
+      margin-top: 20px;
+      font-size: 1.8rem;
+    }
+
+    .success-overlay p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .checkmark {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: block;
+      stroke-width: 2;
+      stroke: var(--success-color);
+      stroke-miterlimit: 10;
+      box-shadow: inset 0px 0px 0px var(--success-color);
+      animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s forwards;
+      position: relative;
+      transform: rotate(45deg); /* Ajuste para o checkmark ficar reto */
+    }
+
+    .checkmark__circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      stroke: var(--success-color);
+      fill: none;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .checkmark__check {
+      transform-origin: 50% 50%;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+
+    @keyframes stroke {
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes fill {
+      100% {
+        box-shadow: inset 0px 0px 0px 30px var(--success-color);
+      }
+    }
+
+    @keyframes scale {
+      0%, 100% {
+        transform: none;
+      }
+      50% {
+        transform: scale3d(1.1, 1.1, 1);
+      }
+    }
+
+    /* Animação de Erro */
+    .error-overlay {
+      background-color: var(--error-bg);
+      color: var(--error-color);
+    }
+
+    .error-overlay h2 {
+      color: var(--error-color);
+      margin-top: 20px;
+      font-size: 1.8rem;
+    }
+
+    .error-overlay p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .error-animation {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: transparent;
+      border: 2px solid var(--error-color);
+      position: relative;
+      animation: pulse 1s infinite;
+    }
+
+    .cross__bar {
+      position: absolute;
+      width: 70px;
+      height: 8px;
+      background-color: var(--error-color);
+      border-radius: 5px;
+      top: 50%;
+      left: 50%;
+      transform-origin: center;
+    }
+
+    .cross__bar--left {
+      transform: translate(-50%, -50%) rotate(45deg);
+      animation: drawLeft 0.5s ease-out forwards;
+    }
+
+    .cross__bar--right {
+      transform: translate(-50%, -50%) rotate(-45deg);
+      animation: drawRight 0.5s ease-out forwards;
+    }
+
+    @keyframes drawLeft {
+      0% { width: 0; }
+      100% { width: 70px; }
+    }
+
+    @keyframes drawRight {
+      0% { width: 0; }
+      100% { width: 70px; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
     /* Responsividade para dispositivos móveis - MELHORADA */
     @media (max-width: 600px) {
       body {
@@ -751,6 +943,36 @@
     <button type="button" onclick="enviar()" class="btn-enviar">Enviar Tudo</button>
 
     <div id="status" class="status"></div>
+
+    <!-- Novos elementos para feedback visual -->
+    <div id="loadingOverlay" class="overlay">
+      <div class="spinner"></div>
+      <p id="loadingMessage">Enviando dados para a Agropec...</p>
+    </div>
+
+    <div id="successOverlay" class="overlay success-overlay">
+      <div class="success-animation">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+          <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+      </div>
+      <h2 id="successMessage">Cadastro realizado com sucesso!</h2>
+      <p>Parabéns, seu expositor foi cadastrado na Agropec 2025.</p>
+      <button type="button" onclick="resetForm()" class="btn-primary">Fazer Novo Cadastro</button>
+    </div>
+
+    <div id="errorOverlay" class="overlay error-overlay">
+      <div class="error-animation">
+        <div class="cross__bar cross__bar--left"></div>
+        <div class="cross__bar cross__bar--right"></div>
+      </div>
+      <h2 id="errorMessage">Erro no Cadastro!</h2>
+      <p>Ocorreu um erro ao enviar seus dados. Por favor, tente novamente.</p>
+      <button type="button" onclick="resetForm()" class="btn-primary">Tentar Novamente</button>
+    </div>
+    <!-- Fim dos novos elementos -->
+
   </div>
 
   <script>
@@ -760,6 +982,57 @@
 
     let produtoCounter = 0;
     const MAX_FILE_SIZE = 1024 * 1024; // 1MB em bytes
+
+    // Novas variáveis para os elementos do overlay
+    const formContainer = document.querySelector('.form-container');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const successOverlay = document.getElementById('successOverlay');
+    const errorOverlay = document.getElementById('errorOverlay');
+    const loadingMessage = document.getElementById('loadingMessage'); // Para atualizar a mensagem de loading
+
+    // Função para mostrar um overlay específico e esconder o formulário
+    function showOverlay(overlayElement, message = '') {
+      formContainer.classList.add('hidden'); // Esconde o formulário
+      loadingOverlay.classList.remove('active');
+      successOverlay.classList.remove('active');
+      errorOverlay.classList.remove('active');
+
+      if (message && overlayElement === loadingOverlay) {
+        loadingMessage.textContent = message;
+      }
+      overlayElement.classList.add('active');
+    }
+
+    // Função para resetar o formulário e esconder todos os overlays
+    function resetForm() {
+      formContainer.classList.remove('hidden');
+      loadingOverlay.classList.remove('active');
+      successOverlay.classList.remove('active');
+      errorOverlay.classList.remove('active');
+      document.getElementById("status").innerText = ""; // Limpa a mensagem de status
+
+      // Limpar campos do formulário (adicione mais se necessário)
+      document.getElementById("empresaNome").value = "";
+      document.getElementById("emailContato").value = "";
+      document.getElementById("linkMaps").value = "";
+      document.getElementById("empresaDesc").value = "";
+      document.getElementById("empresaTipo").value = "";
+
+      // Limpar inputs de arquivo e previews
+      document.getElementById("logoInput").value = "";
+      document.getElementById("bannerInput").value = "";
+      document.getElementById("logoPreview").src = "";
+      document.getElementById("logoPreview").style.display = 'none';
+
+      // Resetar botões de arquivo
+      updateFileButton(document.getElementById('logoInput'), document.getElementById('logoButton'), document.getElementById('logoFileName'));
+      updateFileButton(document.getElementById('bannerInput'), document.getElementById('bannerButton'), document.getElementById('bannerFileName'));
+
+      // Remover produtos e programações dinâmicas
+      document.getElementById("produtosContainer").innerHTML = "";
+      document.getElementById("programacoesContainer").innerHTML = "";
+      produtoCounter = 0; // Resetar contador de produtos
+    }
 
     // Função para validar tamanho do arquivo
     function validateFileSize(file) {
@@ -837,7 +1110,6 @@
 
 document.getElementById('bannerInput').addEventListener('change', function () {
   updateFileButton(this, document.getElementById('bannerButton'), document.getElementById('bannerFileName'));
-  showImagePreview(this, 'bannerPreview');
 });
 
     // Salvar textos originais dos botões
@@ -956,22 +1228,27 @@ document.getElementById('bannerInput').addEventListener('change', function () {
       return JSON.parse(text);
     }
 
+    // Modifique a função enviar() para usar os novos overlays
     async function enviar() {
       try {
         const empresaNome = document.getElementById("empresaNome").value.trim();
         const empresaDesc = document.getElementById("empresaDesc").value.trim();
         const empresaTipo = document.getElementById("empresaTipo").value.trim();
-        const emailContato = document.getElementById("emailContato").value.trim(); // Novo campo
-        const linkMaps = document.getElementById("linkMaps").value.trim(); // Novo campo
+        const emailContato = document.getElementById("emailContato").value.trim();
+        const linkMaps = document.getElementById("linkMaps").value.trim();
 
         if (!empresaNome || !empresaDesc || !empresaTipo) {
-          showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
+          showOverlay(errorOverlay); // Mostra erro no overlay
+          document.getElementById("errorMessage").textContent = "Preencha todos os campos obrigatórios!";
+          document.getElementById("errorOverlay").querySelector('p').textContent = "Por favor, verifique os campos e tente novamente.";
           return;
         }
 
-        // VALIDAÇÃO DE TAMANHO DOS ARQUIVOS ANTES DO ENVIO
         if (!validateAllFiles()) {
-          return; // Para a execução se algum arquivo for muito grande
+          showOverlay(errorOverlay); // Mostra erro no overlay
+          document.getElementById("errorMessage").textContent = "Erro de tamanho de arquivo!";
+          document.getElementById("errorOverlay").querySelector('p').textContent = "Alguns arquivos excedem o tamanho máximo permitido (1MB).";
+          return;
         }
 
         const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
@@ -996,7 +1273,7 @@ document.getElementById('bannerInput').addEventListener('change', function () {
           }
         }
 
-        showStatus("📤 Enviando arquivos para a Agropec...", 'loading');
+        showOverlay(loadingOverlay, "📤 Enviando arquivos para a Agropec..."); // Mostra overlay de loading
         const imageUploadResults = await Promise.allSettled(uploadPromises);
         imageUploadResults.forEach((result, index) => {
             if (result.status === 'fulfilled') {
@@ -1038,19 +1315,23 @@ document.getElementById('bannerInput').addEventListener('change', function () {
 
         console.log("Payload do content.json:", JSON.stringify(content, null, 2));
 
-        showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
+        showOverlay(loadingOverlay, "📄 Enviando dados do expositor (content.json)..."); // Atualiza mensagem de loading
         try {
             const jsonResult = await enviarJsonParaLambdaOriginal(content);
             console.log("Envio do content.json SUCESSO:", jsonResult);
-            showStatus("✅ Cadastro enviado com sucesso para a Agropec!", 'success');
+            showOverlay(successOverlay); // Mostra overlay de sucesso
         } catch (jsonError) {
             console.error("Envio do content.json FALHA:", jsonError);
-            showStatus(`❌ Erro ao enviar dados do expositor: ${jsonError.message}`, 'error');
+            showOverlay(errorOverlay); // Mostra overlay de erro
+            document.getElementById("errorMessage").textContent = "Erro ao enviar dados do expositor!";
+            document.getElementById("errorOverlay").querySelector('p').textContent = `Detalhes: ${jsonError.message}`;
         }
 
       } catch (err) {
         console.error("Erro geral no envio:", err);
-        showStatus(`❌ Erro: ${err.message}`, 'error');
+        showOverlay(errorOverlay); // Mostra overlay de erro para qualquer erro não tratado
+        document.getElementById("errorMessage").textContent = "Ocorreu um erro inesperado!";
+        document.getElementById("errorOverlay").querySelector('p').textContent = `Detalhes: ${err.message}`;
       }
     }
   </script>
