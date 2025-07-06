@@ -18,7 +18,7 @@
   <!-- Importação da fonte Montserrat do Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Fim da importação da fonte -->
 
   <style>
@@ -29,6 +29,7 @@
       --border-dark-green: #1B3F3B;
       --button-green: #3AAFA9;
       --button-hover-green: #2c8b87;
+      --button-light-green: #4ECDC4;
       --text-white: white;
       --placeholder-color: #b3d2cd;
       --error-color: #ff6b6b;
@@ -37,19 +38,29 @@
       --success-bg: #1a2e1a;
       --loading-color: #ffd43b;
       --loading-bg: #2e2a1a;
-      --card-bg: white; /* Cor de fundo do card principal */
-      --card-text-color: #333; /* Cor do texto dentro do card */
-      --input-line-color: #ccc; /* Cor da linha dos inputs */
-      --input-focus-color: #3AAFA9; /* Cor da linha dos inputs ao focar */
+      --card-bg: white;
+      --card-text-color: #333;
+      --input-line-color: #ccc;
+      --input-focus-color: #3AAFA9;
+      --button-secondary: #f8f9fa;
+      --button-secondary-hover: #e9ecef;
+      --button-danger: #dc3545;
+      --button-danger-hover: #c82333;
+      --shadow-light: rgba(0, 0, 0, 0.1);
+      --shadow-medium: rgba(0, 0, 0, 0.15);
+      --shadow-strong: rgba(0, 0, 0, 0.25);
+      --file-button-bg: #f8f9fa;
+      --file-button-border: #dee2e6;
+      --file-button-hover: #e9ecef;
     }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: var(--bg-dark-green );
+      background-color: var(--bg-dark-green);
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh; /* Ocupa a altura total da viewport */
+      min-height: 100vh;
       margin: 0;
       padding: 20px;
       box-sizing: border-box;
@@ -59,12 +70,12 @@
       background-color: var(--card-bg);
       color: var(--card-text-color);
       padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      max-width: 500px; /* Ajuste a largura máxima do card */
+      border-radius: 20px;
+      box-shadow: 0 15px 40px var(--shadow-strong);
+      max-width: 500px;
       width: 100%;
       box-sizing: border-box;
-      position: relative; /* Para posicionar o X de fechar se necessário */
+      position: relative;
     }
 
     h1 {
@@ -72,6 +83,7 @@
       color: var(--card-text-color);
       font-size: 1.8rem;
       margin-bottom: 20px;
+      font-weight: 600;
     }
 
     .logo-container {
@@ -80,13 +92,12 @@
     }
 
     .logo-container img {
-      max-width: 180px; /* Ajuste o tamanho da logo dentro do card */
+      max-width: 180px;
       height: auto;
       display: inline-block;
       margin-bottom: 10px;
     }
 
-    /* Linha decorativa abaixo da logo */
     .logo-container::after {
       content: '';
       display: block;
@@ -98,9 +109,9 @@
     }
 
     label {
-      font-weight: bold;
-      margin-top: 20px; /* Mais espaço acima das labels */
-      margin-bottom: 5px; /* Espaço abaixo das labels */
+      font-weight: 600;
+      margin-top: 20px;
+      margin-bottom: 5px;
       display: block;
       color: var(--card-text-color);
       font-size: 0.9rem;
@@ -109,25 +120,23 @@
     }
 
     input[type="text"],
-    textarea,
-    input[type="file"] {
+    textarea {
       width: 100%;
-      padding: 8px 0; /* Padding vertical */
+      padding: 8px 0;
       border: none;
-      border-bottom: 1px solid var(--input-line-color); /* Linha inferior */
-      background-color: transparent; /* Fundo transparente */
+      border-bottom: 1px solid var(--input-line-color);
+      background-color: transparent;
       color: var(--card-text-color);
       font-size: 1rem;
-      margin-top: 0; /* Remove margin-top padrão */
-      margin-bottom: 20px; /* Espaço abaixo do input */
+      margin-top: 0;
+      margin-bottom: 20px;
       transition: border-color 0.3s ease;
     }
 
     input[type="text"]:focus,
-    textarea:focus,
-    input[type="file"]:focus {
+    textarea:focus {
       outline: none;
-      border-bottom-color: var(--input-focus-color); /* Cor da linha ao focar */
+      border-bottom-color: var(--input-focus-color);
     }
 
     input::placeholder,
@@ -135,7 +144,6 @@
       color: var(--placeholder-color);
     }
 
-    /* Estilos para o select (com a seta) */
     select {
       width: 100%;
       padding: 8px 0;
@@ -149,50 +157,288 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20256%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M208.5%2096.5L128%20177l-80.5-80.5z%22%2F%3E%3C%2Fsvg%3E' ); /* Seta preta para fundo branco */
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20256%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M208.5%2096.5L128%20177l-80.5-80.5z%22%2F%3E%3C%2Fsvg%3E');
       background-repeat: no-repeat;
       background-position: right 10px center;
       background-size: 1em;
       padding-right: 2em;
-      border-radius: 0; /* Remove border-radius para alinhar com a linha */
+      border-radius: 0;
     }
 
     select option {
-        background-color: var(--card-bg); /* Cor de fundo das opções */
-        color: var(--card-text-color); /* Cor do texto das opções */
+      background-color: var(--card-bg);
+      color: var(--card-text-color);
     }
 
-    /* Estilos para os botões de adicionar/remover */
-    button {
-      background-color: var(--button-green);
-      color: var(--text-white);
-      font-weight: bold;
+    /* ESTILO CUSTOMIZADO PARA INPUT DE ARQUIVO */
+    .file-input-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    /* Esconde o input de arquivo original */
+    input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+    /* Botão customizado para input de arquivo */
+    .file-input-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: var(--file-button-bg);
+      border: 2px solid var(--file-button-border);
+      border-radius: 10px;
+      color: var(--card-text-color);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
       cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      min-width: 180px;
+      justify-content: center;
+    }
+
+    .file-input-button:hover {
+      background: var(--file-button-hover);
+      border-color: var(--button-green);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    .file-input-button:active {
+      transform: translateY(0);
+    }
+
+    /* Ícone do botão de arquivo */
+    .file-input-button::before {
+      content: '📁';
+      font-size: 1.1rem;
+    }
+
+    /* Texto do arquivo selecionado */
+    .file-name {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: var(--button-green);
+      font-weight: 500;
+      font-style: italic;
+      min-height: 20px;
+    }
+
+    /* Estilo especial quando arquivo está selecionado */
+    .file-input-button.has-file {
+      background: linear-gradient(135deg, rgba(58, 175, 169, 0.1) 0%, rgba(78, 205, 196, 0.1) 100%);
+      border-color: var(--button-green);
+      color: var(--button-green);
+    }
+
+    .file-input-button.has-file::before {
+      content: '✓';
+      color: var(--button-green);
+    }
+
+    /* NOVOS ESTILOS PARA BOTÕES - DESIGN CLEAN E MODERNO */
+    
+    /* Botão base - reset de estilos */
+    button {
       border: none;
-      transition: background-color 0.3s ease;
-      border-radius: 4px;
-      padding: 8px 12px;
-      width: auto; /* Para botões de adicionar/remover */
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      outline: none;
+      user-select: none;
     }
 
-    button:hover {
-      background-color: var(--button-hover-green);
+    /* Botão primário - Adicionar */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--button-green) 0%, var(--button-light-green) 100%);
+      color: var(--text-white);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(58, 175, 169, 0.3);
+      margin: 10px 0;
+      min-width: 160px;
     }
 
-    /* Estilo para os itens de produto e programação (para alinhar input e botão) */
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--button-hover-green) 0%, var(--button-green) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(58, 175, 169, 0.4);
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(58, 175, 169, 0.3);
+    }
+
+    /* Ícone para botões de adicionar */
+    .btn-primary::after {
+      content: '+';
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    /* Botão de remoção - estilo minimalista e elegante */
+    .btn-remove {
+      background: var(--button-secondary);
+      color: var(--button-danger);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border: 1px solid rgba(220, 53, 69, 0.2);
+      min-width: 80px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-remove:hover {
+      background: var(--button-danger);
+      color: var(--text-white);
+      border-color: var(--button-danger);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-remove:active {
+      transform: translateY(0);
+    }
+
+    /* Ícone para botões de remover */
+    .btn-remove::before {
+      content: '×';
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    /* Botão principal - Enviar Tudo */
+    .btn-enviar {
+      width: 100%;
+      margin-top: 40px;
+      padding: 18px 32px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--button-green) 0%, var(--button-light-green) 50%, var(--button-green) 100%);
+      color: var(--text-white);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 8px 30px rgba(58, 175, 169, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-enviar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn-enviar:hover {
+      background: linear-gradient(135deg, var(--button-hover-green) 0%, var(--button-green) 50%, var(--button-hover-green) 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(58, 175, 169, 0.5);
+    }
+
+    .btn-enviar:hover::before {
+      left: 100%;
+    }
+
+    .btn-enviar:active {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(58, 175, 169, 0.4);
+    }
+
+    /* Ícone para botão enviar */
+    .btn-enviar::after {
+      content: '→';
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-left: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-enviar:hover::after {
+      transform: translateX(4px);
+    }
+
+    /* Container para botões de ação */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    /* Estilo para os itens de produto e programação */
     .produto-item,
     .programacao-item {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 15px;
+      padding: 15px;
+      background: rgba(58, 175, 169, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(58, 175, 169, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .produto-item:hover,
+    .programacao-item:hover {
+      background: rgba(58, 175, 169, 0.08);
+      border-color: rgba(58, 175, 169, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px var(--shadow-light);
     }
 
     .produto-item input,
     .programacao-item input {
       flex-grow: 1;
       margin-top: 0;
-      margin-bottom: 0; /* Remove margin-bottom para alinhar */
+      margin-bottom: 0;
+      background: transparent;
+      border-bottom-color: rgba(58, 175, 169, 0.3);
     }
 
     .produto-item button,
@@ -201,54 +447,114 @@
       margin-top: 0;
     }
 
+    /* Estilo especial para input de arquivo dentro dos produtos */
+    .produto-item .file-input-container {
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
+
+    .produto-item .file-input-button {
+      width: 100%;
+      min-width: auto;
+    }
+
+    /* Seções com títulos melhorados */
     h3 {
       color: var(--card-text-color);
-      margin-top: 30px;
-      margin-bottom: 15px;
+      margin-top: 35px;
+      margin-bottom: 20px;
       font-size: 1.3rem;
+      font-weight: 600;
+      position: relative;
+      padding-left: 15px;
     }
 
-    /* Estilo para o botão Enviar Tudo */
-    .btn-enviar {
-      width: 100%; /* Ocupa a largura total */
-      margin-top: 40px; /* Mais espaço acima */
-      padding: 15px 25px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      background-color: var(--button-green); /* Cor principal */
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+    h3::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(135deg, var(--button-green), var(--button-light-green));
+      border-radius: 2px;
     }
 
-    .btn-enviar:hover {
-      background-color: var(--button-hover-green);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    }
-
+    /* Melhorias nos status */
     .status {
       margin-top: 20px;
-      font-weight: bold;
+      font-weight: 500;
       text-align: center;
-      padding: 10px;
-      border-radius: 4px;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid transparent;
     }
 
     .error {
       color: var(--error-color);
       background-color: var(--error-bg);
+      border-color: var(--error-color);
     }
 
     .success {
       color: var(--success-color);
       background-color: var(--success-bg);
+      border-color: var(--success-color);
     }
 
     .loading {
       color: var(--loading-color);
       background-color: var(--loading-bg);
+      border-color: var(--loading-color);
+    }
+
+    /* Responsividade para dispositivos móveis */
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 25px;
+        margin: 10px;
+      }
+
+      .produto-item,
+      .programacao-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .btn-primary {
+        min-width: auto;
+        width: 100%;
+      }
+
+      .btn-remove {
+        min-width: auto;
+        align-self: flex-end;
+        width: 100px;
+      }
+
+      .file-input-button {
+        min-width: auto;
+        width: 100%;
+      }
+    }
+
+    /* Animações suaves para elementos dinâmicos */
+    .produto-item,
+    .programacao-item {
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -260,7 +566,6 @@
     </div>
 
     <h1>Cadastro de Expositor</h1>
-    <!-- Removido o texto de introdução para um visual mais limpo -->
 
     <label for="empresaNome">Nome da Empresa:</label>
     <input type="text" id="empresaNome" placeholder="Agro Cangaia">
@@ -282,22 +587,38 @@
     </select>
 
     <label for="logoInput">Logo:</label>
-    <input type="file" id="logoInput" accept="image/*">
+    <div class="file-input-container">
+      <input type="file" id="logoInput" accept="image/*">
+      <label for="logoInput" class="file-input-button" id="logoButton">
+        Escolher Logo
+      </label>
+      <div class="file-name" id="logoFileName"></div>
+    </div>
 
     <label for="bannerInput">Banner:</label>
-    <input type="file" id="bannerInput" accept="image/*">
+    <div class="file-input-container">
+      <input type="file" id="bannerInput" accept="image/*">
+      <label for="bannerInput" class="file-input-button" id="bannerButton">
+        Escolher Banner
+      </label>
+      <div class="file-name" id="bannerFileName"></div>
+    </div>
 
-    <label>Produtos / Serviços</label>
+    <h3>Produtos / Serviços</h3>
     <div id="produtosContainer">
       <!-- Inputs serão adicionados aqui ao clicar -->
     </div>
-    <button type="button" onclick="adicionarProduto( )">Adicionar Produto / Serviço</button>
+    <div class="action-buttons">
+      <button type="button" onclick="adicionarProduto()" class="btn-primary">Adicionar Produto / Serviço</button>
+    </div>
 
     <h3>Programações</h3>
     <div id="programacoesContainer" class="programacoes-container">
       <!-- Programações dinâmicas serão inseridas aqui -->
     </div>
-    <button type="button" onclick="adicionarProgramacao()">Adicionar Programação</button>
+    <div class="action-buttons">
+      <button type="button" onclick="adicionarProgramacao()" class="btn-primary">Adicionar Programação</button>
+    </div>
 
     <button type="button" onclick="enviar()" class="btn-enviar">Enviar Tudo</button>
 
@@ -306,49 +627,94 @@
 
   <script>
     const BASE_URL = 'https://4n2wbzfpwjhw7boo2eak3caehy0hylmz.lambda-url.sa-east-1.on.aws';
-    const uploadImageUrl = `${BASE_URL}?action=uploadImage`; // URL para upload de imagens
-    const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`; // URL para salvar o content.json
+    const uploadImageUrl = `${BASE_URL}?action=uploadImage`;
+    const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`;
 
-    function adicionarProduto( ) {
+    let produtoCounter = 0;
+
+    // Função para atualizar o visual do botão de arquivo
+    function updateFileButton(input, button, fileName) {
+      const file = input.files[0];
+      if (file) {
+        button.classList.add('has-file');
+        button.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+        fileName.textContent = `Arquivo selecionado: ${file.name}`;
+      } else {
+        button.classList.remove('has-file');
+        button.textContent = button.getAttribute('data-original-text');
+        fileName.textContent = '';
+      }
+    }
+
+    // Event listeners para os inputs de arquivo principais
+    document.getElementById('logoInput').addEventListener('change', function() {
+      updateFileButton(this, document.getElementById('logoButton'), document.getElementById('logoFileName'));
+    });
+
+    document.getElementById('bannerInput').addEventListener('change', function() {
+      updateFileButton(this, document.getElementById('bannerButton'), document.getElementById('bannerFileName'));
+    });
+
+    // Salvar textos originais dos botões
+    document.getElementById('logoButton').setAttribute('data-original-text', 'Escolher Logo');
+    document.getElementById('bannerButton').setAttribute('data-original-text', 'Escolher Banner');
+
+    function adicionarProduto() {
       const container = document.getElementById("produtosContainer");
       const div = document.createElement("div");
-      div.className = 'produto-item'; // Adiciona a classe para estilização
+      div.className = 'produto-item';
+      produtoCounter++;
+      
+      const fileInputId = `produtoInput${produtoCounter}`;
+      const buttonId = `produtoButton${produtoCounter}`;
+      const fileNameId = `produtoFileName${produtoCounter}`;
+      
       div.innerHTML = `
-        <input type="file" accept="image/*" class="produtoInput">
-        <button type="button" onclick="this.parentElement.remove()">Remover</button>
+        <div class="file-input-container">
+          <input type="file" accept="image/*" class="produtoInput" id="${fileInputId}">
+          <label for="${fileInputId}" class="file-input-button" id="${buttonId}" data-original-text="Escolher Produto">
+            Escolher Produto
+          </label>
+          <div class="file-name" id="${fileNameId}"></div>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="btn-remove">Remover</button>
       `;
       container.appendChild(div);
+
+      // Adicionar event listener para o novo input
+      document.getElementById(fileInputId).addEventListener('change', function() {
+        updateFileButton(this, document.getElementById(buttonId), document.getElementById(fileNameId));
+      });
     }
 
     function adicionarProgramacao() {
       const container = document.getElementById("programacoesContainer");
       const div = document.createElement("div");
-      div.className = 'programacao-item'; // Adiciona a classe para estilização
+      div.className = 'programacao-item';
       div.innerHTML = `
         <input type="text" placeholder="Horário (ex: 9.00)" class="programacaoHorario" required>
         <input type="text" placeholder="Título da Programação" class="programacaoTitulo" required>
-        <button type="button" onclick="this.parentElement.remove()">Remover</button>
+        <button type="button" onclick="this.parentElement.remove()" class="btn-remove">Remover</button>
       `;
       container.appendChild(div);
     }
 
     function showStatus(message, type = 'loading') {
       const div = document.getElementById("status");
-      div.className = type;
+      div.className = `status ${type}`;
       div.innerText = message;
     }
 
-    // Função para enviar arquivos (imagens) usando o cabeçalho 'filename'
     async function enviarArquivoParaLambdaOriginal(file, fileNameWithFolder) {
-      const url = uploadImageUrl; // A URL já tem a action=uploadImage
+      const url = uploadImageUrl;
 
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': file.type, // O tipo do arquivo (image/png, image/jpeg, etc.)
-          'filename': fileNameWithFolder // <--- O NOME DO ARQUIVO COM A PASTA (Ex: Exhibitors/empresaId/logo.png)
+          'Content-Type': file.type,
+          'filename': fileNameWithFolder
         },
-        body: file // O conteúdo binário do arquivo
+        body: file
       });
 
       const text = await response.text();
@@ -361,9 +727,8 @@
       }
     }
 
-    // Função para enviar o JSON do expositor (o Lambda original gera o timestamp e a pasta)
     async function enviarJsonParaLambdaOriginal(payload) {
-      const url = saveExhibitorUrl; // A URL já tem a action=saveExpositor
+      const url = saveExhibitorUrl;
 
       const response = await fetch(url, {
         method: 'POST',
@@ -376,94 +741,93 @@
     }
 
     async function enviar() {
-  try {
-    const empresaNome = document.getElementById("empresaNome").value.trim();
-    const empresaDesc = document.getElementById("empresaDesc").value.trim();
-    const empresaTipo = document.getElementById("empresaTipo").value.trim(); // Pega o valor do select
+      try {
+        const empresaNome = document.getElementById("empresaNome").value.trim();
+        const empresaDesc = document.getElementById("empresaDesc").value.trim();
+        const empresaTipo = document.getElementById("empresaTipo").value.trim();
 
-    if (!empresaNome || !empresaDesc || !empresaTipo) { // Adicionado empresaTipo na validação
-      showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
-      return;
-    }
-
-    const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
-    const uploadPromises = [];
-    const produtosNomes = [];
-
-    const logoFile = document.getElementById("logoInput").files[0];
-    const bannerFile = document.getElementById("bannerInput").files[0];
-
-    const empresaFolder = `Exhibitors/${empresaId}/`;
-
-    if (logoFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(logoFile, `${empresaFolder}logo.png`));
-    if (bannerFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(bannerFile, `${empresaFolder}banner.png`));
-
-    const produtoInputs = document.getElementsByClassName("produtoInput");
-    for (let i = 0; i < produtoInputs.length; i++) {
-      const file = produtoInputs[i].files[0];
-      if (file) {
-        const nomeArquivo = `product_${i + 1}.png`;
-        produtosNomes.push(nomeArquivo);
-        uploadPromises.push(enviarArquivoParaLambdaOriginal(file, `${empresaFolder}${nomeArquivo}`));
-      }
-    }
-
-    showStatus("📤 Enviando arquivos para o AWS S3...", 'loading');
-    const imageUploadResults = await Promise.allSettled(uploadPromises);
-    imageUploadResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-            console.log(`Upload de imagem ${index + 1} SUCESSO:`, result.value);
-        } else {
-            console.error(`Upload de imagem ${index + 1} FALHA:`, result.reason);
+        if (!empresaNome || !empresaDesc || !empresaTipo) {
+          showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
+          return;
         }
-    });
 
+        const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
+        const uploadPromises = [];
+        const produtosNomes = [];
 
-    const horarios = document.getElementsByClassName("programacaoHorario");
-    const titulos = document.getElementsByClassName("programacaoTitulo");
-    const programacoes = [];
+        const logoFile = document.getElementById("logoInput").files[0];
+        const bannerFile = document.getElementById("bannerInput").files[0];
 
-    for (let i = 0; i < horarios.length; i++) {
-      const horario = horarios[i].value.trim();
-      const titulo = titulos[i].value.trim();
-      if (horario && titulo) {
-        programacoes.push({ horario, titulo, data: "13/07/2025" });
+        const empresaFolder = `Exhibitors/${empresaId}/`;
+
+        if (logoFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(logoFile, `${empresaFolder}logo.png`));
+        if (bannerFile) uploadPromises.push(enviarArquivoParaLambdaOriginal(bannerFile, `${empresaFolder}banner.png`));
+
+        const produtoInputs = document.getElementsByClassName("produtoInput");
+        for (let i = 0; i < produtoInputs.length; i++) {
+          const file = produtoInputs[i].files[0];
+          if (file) {
+            const nomeArquivo = `product_${i + 1}.png`;
+            produtosNomes.push(nomeArquivo);
+            uploadPromises.push(enviarArquivoParaLambdaOriginal(file, `${empresaFolder}${nomeArquivo}`));
+          }
+        }
+
+        showStatus("📤 Enviando arquivos para o AWS S3...", 'loading');
+        const imageUploadResults = await Promise.allSettled(uploadPromises);
+        imageUploadResults.forEach((result, index) => {
+            if (result.status === 'fulfilled') {
+                console.log(`Upload de imagem ${index + 1} SUCESSO:`, result.value);
+            } else {
+                console.error(`Upload de imagem ${index + 1} FALHA:`, result.reason);
+            }
+        });
+
+        const horarios = document.getElementsByClassName("programacaoHorario");
+        const titulos = document.getElementsByClassName("programacaoTitulo");
+        const programacoes = [];
+
+        for (let i = 0; i < horarios.length; i++) {
+          const horario = horarios[i].value.trim();
+          const titulo = titulos[i].value.trim();
+          if (horario && titulo) {
+            programacoes.push({ horario, titulo, data: "13/07/2025" });
+          }
+        }
+
+        const content = {
+              nome: empresaNome,
+              id: empresaId,
+              estande: {
+                nome: empresaNome,
+                description: empresaDesc,
+                type: empresaTipo,
+                banner: bannerFile ? "banner.png" : null,
+                logo: logoFile ? "logo.png" : null,
+                programacoes,
+                servicos: produtosNomes
+              },
+              emailContact: null,
+              locationLink: null
+            };
+
+        console.log("Payload do content.json:", JSON.stringify(content, null, 2));
+
+        showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
+        try {
+            const jsonResult = await enviarJsonParaLambdaOriginal(content);
+            console.log("Envio do content.json SUCESSO:", jsonResult);
+            showStatus("✅ Cadastro enviado com sucesso para o AWS S3!", 'success');
+        } catch (jsonError) {
+            console.error("Envio do content.json FALHA:", jsonError);
+            showStatus(`❌ Erro ao enviar dados do expositor: ${jsonError.message}`, 'error');
+        }
+
+      } catch (err) {
+        console.error("Erro geral no envio:", err);
+        showStatus(`❌ Erro: ${err.message}`, 'error');
       }
     }
-
-    const content = {
-          nome: empresaNome,
-          id: empresaId, // <--- ESTE 'id' SERÁ USADO PELO LAMBDA PARA A PASTA
-          estande: {
-            nome: empresaNome,
-            description: empresaDesc,
-            type: empresaTipo, // O valor selecionado do select
-            banner: bannerFile ? "banner.png" : null,
-            logo: logoFile ? "logo.png" : null,
-            programacoes,
-            servicos: produtosNomes
-          },
-          emailContact: null,
-          locationLink: null
-        };
-
-    console.log("Payload do content.json:", JSON.stringify(content, null, 2));
-
-    showStatus("📄 Enviando dados do expositor (content.json)...", 'loading');
-    try {
-        const jsonResult = await enviarJsonParaLambdaOriginal(content);
-        console.log("Envio do content.json SUCESSO:", jsonResult);
-        showStatus("✅ Cadastro enviado com sucesso para o AWS S3!", 'success');
-    } catch (jsonError) {
-        console.error("Envio do content.json FALHA:", jsonError);
-        showStatus(`❌ Erro ao enviar dados do expositor: ${jsonError.message}`, 'error');
-    }
-
-  } catch (err) {
-    console.error("Erro geral no envio:", err);
-    showStatus(`❌ Erro: ${err.message}`, 'error');
-  }
-}
   </script>
 </body>
 </html>
