@@ -31,7 +31,7 @@
       --button-hover-green: #2c8b87;
       --button-light-green: #4ECDC4;
       --text-white: white;
-      --placeholder-color: #b3d2cd;
+      --placeholder-color: #666; /* Cor do placeholder ajustada */
       --error-color: #ff6b6b;
       --error-bg: #2c1515;
       --success-color: #51cf66;
@@ -96,7 +96,7 @@
     }
 
     .logo-container img {
-      max-width: 280px;
+      max-width: 180px;
       height: auto;
       display: inline-block;
       margin-bottom: 10px;
@@ -400,10 +400,6 @@
       background: linear-gradient(135deg, var(--button-hover-green) 0%, var(--button-green) 50%, var(--button-hover-green) 100%);
       transform: translateY(-3px);
       box-shadow: 0 12px 40px rgba(58, 175, 169, 0.5);
-    }
-
-    .btn-enviar:hover::before {
-      left: 100%;
     }
 
     .btn-enviar:active {
