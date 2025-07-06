@@ -96,7 +96,7 @@
     }
 
     .logo-container img {
-      max-width: 180px;
+      max-width: 280px;
       height: auto;
       display: inline-block;
       margin-bottom: 10px;
@@ -657,6 +657,14 @@
     <label for="empresaNome">Nome da Empresa:</label>
     <input type="text" id="empresaNome" placeholder="Agro Cangaia">
 
+    <!-- NOVOS CAMPOS ADICIONADOS AQUI -->
+    <label for="emailContato">Email para Contato:</label>
+    <input type="text" id="emailContato" placeholder="contato@empresa.com">
+
+    <label for="linkMaps">Link de Endereço do Google Maps:</label>
+    <input type="text" id="linkMaps" placeholder="https://maps.app.goo.gl/seu-endereco">
+    <!-- FIM DOS NOVOS CAMPOS -->
+
     <label for="empresaDesc">Descrição:</label>
     <textarea id="empresaDesc" rows="4" placeholder="Descrição da empresa"></textarea>
 
@@ -833,6 +841,8 @@
         const empresaNome = document.getElementById("empresaNome").value.trim();
         const empresaDesc = document.getElementById("empresaDesc").value.trim();
         const empresaTipo = document.getElementById("empresaTipo").value.trim();
+        const emailContato = document.getElementById("emailContato").value.trim(); // Novo campo
+        const linkMaps = document.getElementById("linkMaps").value.trim(); // Novo campo
 
         if (!empresaNome || !empresaDesc || !empresaTipo) {
           showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
@@ -895,8 +905,8 @@
                 programacoes,
                 servicos: produtosNomes
               },
-              emailContact: null,
-              locationLink: null
+              emailContact: emailContato, // Adicionado ao payload
+              locationLink: linkMaps // Adicionado ao payload
             };
 
         console.log("Payload do content.json:", JSON.stringify(content, null, 2));
