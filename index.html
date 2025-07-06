@@ -564,26 +564,26 @@
       border-color: var(--loading-color);
     }
 
-    /* OVERLAYS CORRIGIDOS */
+    /* OVERLAYS CORRIGIDOS - POSIÇÃO FIXA NA VIEWPORT */
     .overlay {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       background-color: rgba(255, 255, 255, 0.98);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      border-radius: 20px;
-      z-index: 1000;
+      z-index: 9999;
       opacity: 0;
       visibility: hidden;
       transition: all 0.4s ease;
       padding: 40px;
       box-sizing: border-box;
+      backdrop-filter: blur(5px);
     }
 
     .overlay.show {
@@ -593,7 +593,16 @@
 
     /* Loading Overlay */
     .loading-overlay {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      background: linear-gradient(135deg, rgba(248, 249, 250, 0.95) 0%, rgba(233, 236, 239, 0.95) 100%);
+    }
+
+    .loading-overlay .overlay-content {
+      background: white;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 90%;
     }
 
     .spinner {
@@ -626,7 +635,16 @@
 
     /* Success Overlay */
     .success-overlay {
-      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      background: linear-gradient(135deg, rgba(212, 237, 218, 0.95) 0%, rgba(195, 230, 203, 0.95) 100%);
+    }
+
+    .success-overlay .overlay-content {
+      background: white;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 90%;
     }
 
     .success-icon {
@@ -670,7 +688,16 @@
 
     /* Error Overlay */
     .error-overlay {
-      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      background: linear-gradient(135deg, rgba(248, 215, 218, 0.95) 0%, rgba(245, 198, 203, 0.95) 100%);
+    }
+
+    .error-overlay .overlay-content {
+      background: white;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 90%;
     }
 
     .error-icon {
@@ -927,25 +954,31 @@
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="overlay loading-overlay">
-      <div class="spinner"></div>
-      <div class="loading-text" id="loadingText">Enviando dados para a Agropec...</div>
-      <div class="loading-subtext" id="loadingSubtext">Por favor, aguarde...</div>
+      <div class="overlay-content">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Enviando dados para a Agropec...</div>
+        <div class="loading-subtext" id="loadingSubtext">Por favor, aguarde...</div>
+      </div>
     </div>
 
     <!-- Success Overlay -->
     <div id="successOverlay" class="overlay success-overlay">
-      <div class="success-icon"></div>
-      <div class="success-title">Cadastro Realizado!</div>
-      <div class="success-message">Parabéns! Seu expositor foi cadastrado com sucesso na Agropec 2025.</div>
-      <button class="overlay-button" onclick="resetForm()">Fazer Novo Cadastro</button>
+      <div class="overlay-content">
+        <div class="success-icon"></div>
+        <div class="success-title">Cadastro Realizado!</div>
+        <div class="success-message">Parabéns! Seu expositor foi cadastrado com sucesso na Agropec 2025.</div>
+        <button class="overlay-button" onclick="resetForm()">Fazer Novo Cadastro</button>
+      </div>
     </div>
 
     <!-- Error Overlay -->
     <div id="errorOverlay" class="overlay error-overlay">
-      <div class="error-icon"></div>
-      <div class="error-title" id="errorTitle">Erro no Cadastro!</div>
-      <div class="error-message" id="errorMessage">Ocorreu um erro ao enviar seus dados. Por favor, tente novamente.</div>
-      <button class="overlay-button" onclick="resetForm()">Tentar Novamente</button>
+      <div class="overlay-content">
+        <div class="error-icon"></div>
+        <div class="error-title" id="errorTitle">Erro no Cadastro!</div>
+        <div class="error-message" id="errorMessage">Ocorreu um erro ao enviar seus dados. Por favor, tente novamente.</div>
+        <button class="overlay-button" onclick="resetForm()">Tentar Novamente</button>
+      </div>
     </div>
   </div>
 
