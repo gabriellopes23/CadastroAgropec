@@ -1591,9 +1591,9 @@
             // Converter data do formato YYYY-MM-DD para DD/MM/YYYY
             const dataFormatada = data.split('-').reverse().join('/');
             programacoes.push({ 
-              data: dataFormatada, 
               horario, 
-              titulo 
+              titulo ,
+              data: dataFormatada, 
             });
           }
         }
