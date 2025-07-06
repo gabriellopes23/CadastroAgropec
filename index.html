@@ -977,7 +977,7 @@
           }
         }
 
-        showStatus("📤 Enviando arquivos para o AWS S3...", 'loading');
+        showStatus("📤 Enviando arquivos para a Agropec...", 'loading');
         const imageUploadResults = await Promise.allSettled(uploadPromises);
         imageUploadResults.forEach((result, index) => {
             if (result.status === 'fulfilled') {
@@ -1021,7 +1021,7 @@
         try {
             const jsonResult = await enviarJsonParaLambdaOriginal(content);
             console.log("Envio do content.json SUCESSO:", jsonResult);
-            showStatus("✅ Cadastro enviado com sucesso para o AWS S3!", 'success');
+            showStatus("✅ Cadastro enviado com sucesso para a Agropec!", 'success');
         } catch (jsonError) {
             console.error("Envio do content.json FALHA:", jsonError);
             showStatus(`❌ Erro ao enviar dados do expositor: ${jsonError.message}`, 'error');
