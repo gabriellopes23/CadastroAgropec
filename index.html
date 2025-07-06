@@ -31,7 +31,7 @@
       --button-hover-green: #2c8b87;
       --button-light-green: #4ECDC4;
       --text-white: white;
-      --placeholder-color: #686666ad; /* Cor do placeholder ajustada */
+      --placeholder-color: #666; /* Cor do placeholder ajustada */
       --error-color: #ff6b6b;
       --error-bg: #2c1515;
       --success-color: #51cf66;
@@ -52,6 +52,7 @@
       --file-button-bg: #f8f9fa;
       --file-button-border: #dee2e6;
       --file-button-hover: #e9ecef;
+      --info-text-color: #6c757d;
     }
 
     * {
@@ -251,6 +252,22 @@
       box-sizing: border-box;
     }
 
+    /* NOVA INDICAÇÃO VISUAL DE LIMITE DE TAMANHO */
+    .file-size-info {
+      margin-top: 5px;
+      font-size: 0.75rem;
+      color: var(--info-text-color);
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .file-size-info::before {
+      content: 'ℹ️';
+      font-size: 0.8rem;
+    }
+
     /* Estilo especial quando arquivo está selecionado */
     .file-input-button.has-file {
       background: linear-gradient(135deg, rgba(58, 175, 169, 0.1) 0%, rgba(78, 205, 196, 0.1) 100%);
@@ -261,6 +278,18 @@
     .file-input-button.has-file::before {
       content: '✓';
       color: var(--button-green);
+    }
+
+    /* Estilo especial quando arquivo é muito grande */
+    .file-input-button.file-too-large {
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 107, 107, 0.2) 100%);
+      border-color: var(--error-color);
+      color: var(--error-color);
+    }
+
+    .file-input-button.file-too-large::before {
+      content: '⚠️';
+      color: var(--error-color);
     }
 
     /* NOVOS ESTILOS PARA BOTÕES - DESIGN CLEAN E MODERNO */
@@ -400,6 +429,10 @@
       background: linear-gradient(135deg, var(--button-hover-green) 0%, var(--button-green) 50%, var(--button-hover-green) 100%);
       transform: translateY(-3px);
       box-shadow: 0 12px 40px rgba(58, 175, 169, 0.5);
+    }
+
+    .btn-enviar:hover::before {
+      left: 100%;
     }
 
     .btn-enviar:active {
@@ -683,6 +716,7 @@
       <label for="logoInput" class="file-input-button" id="logoButton">
         Escolher Logo
       </label>
+      <div class="file-size-info">Tamanho máximo: 1MB</div>
       <div class="file-name" id="logoFileName"></div>
     </div>
 
@@ -692,6 +726,7 @@
       <label for="bannerInput" class="file-input-button" id="bannerButton">
         Escolher Banner
       </label>
+      <div class="file-size-info">Tamanho máximo: 1MB</div>
       <div class="file-name" id="bannerFileName"></div>
     </div>
 
@@ -722,19 +757,57 @@
     const saveExhibitorUrl = `${BASE_URL}?action=saveExpositor`;
 
     let produtoCounter = 0;
+    const MAX_FILE_SIZE = 1024 * 1024; // 1MB em bytes
 
-    // Função para atualizar o visual do botão de arquivo
+    // Função para validar tamanho do arquivo
+    function validateFileSize(file) {
+      return file.size <= MAX_FILE_SIZE;
+    }
+
+    // Função para formatar tamanho do arquivo
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Função para atualizar o visual do botão de arquivo com validação de tamanho
     function updateFileButton(input, button, fileName) {
       const file = input.files[0];
       if (file) {
-        button.classList.add('has-file');
-        const displayName = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
-        button.textContent = displayName;
-        fileName.textContent = `Arquivo selecionado: ${file.name}`;
+        const isValidSize = validateFileSize(file);
+        
+        // Remove todas as classes de estado
+        button.classList.remove('has-file', 'file-too-large');
+        
+        if (isValidSize) {
+          button.classList.add('has-file');
+          const displayName = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
+          button.textContent = displayName;
+          fileName.textContent = `Arquivo selecionado: ${file.name} (${formatFileSize(file.size)})`;
+          fileName.style.color = 'var(--button-green)';
+        } else {
+          button.classList.add('file-too-large');
+          button.textContent = 'Arquivo muito grande!';
+          fileName.textContent = `❌ Arquivo muito grande: ${file.name} (${formatFileSize(file.size)}). Máximo permitido: 1MB`;
+          fileName.style.color = 'var(--error-color)';
+          
+          // Limpar o input para forçar nova seleção
+          setTimeout(() => {
+            input.value = '';
+            button.classList.remove('file-too-large');
+            button.textContent = button.getAttribute('data-original-text');
+            fileName.textContent = '';
+            fileName.style.color = 'var(--button-green)';
+          }, 3000);
+        }
       } else {
-        button.classList.remove('has-file');
+        button.classList.remove('has-file', 'file-too-large');
         button.textContent = button.getAttribute('data-original-text');
         fileName.textContent = '';
+        fileName.style.color = 'var(--button-green)';
       }
     }
 
@@ -767,13 +840,14 @@
           <label for="${fileInputId}" class="file-input-button" id="${buttonId}" data-original-text="Escolher Produto">
             Escolher Produto
           </label>
+          <div class="file-size-info">Tamanho máximo: 1MB</div>
           <div class="file-name" id="${fileNameId}"></div>
         </div>
         <button type="button" onclick="this.parentElement.remove()" class="btn-remove">Remover</button>
       `;
       container.appendChild(div);
 
-      // Adicionar event listener para o novo input
+      // Adicionar event listener para o novo input com validação
       document.getElementById(fileInputId).addEventListener('change', function() {
         updateFileButton(this, document.getElementById(buttonId), document.getElementById(fileNameId));
       });
@@ -795,6 +869,36 @@
       const div = document.getElementById("status");
       div.className = `status ${type}`;
       div.innerText = message;
+    }
+
+    // Função para validar todos os arquivos antes do envio
+    function validateAllFiles() {
+      const logoFile = document.getElementById("logoInput").files[0];
+      const bannerFile = document.getElementById("bannerInput").files[0];
+      const produtoInputs = document.getElementsByClassName("produtoInput");
+
+      // Validar logo
+      if (logoFile && !validateFileSize(logoFile)) {
+        showStatus(`❌ Logo muito grande (${formatFileSize(logoFile.size)}). Máximo permitido: 1MB`, 'error');
+        return false;
+      }
+
+      // Validar banner
+      if (bannerFile && !validateFileSize(bannerFile)) {
+        showStatus(`❌ Banner muito grande (${formatFileSize(bannerFile.size)}). Máximo permitido: 1MB`, 'error');
+        return false;
+      }
+
+      // Validar produtos
+      for (let i = 0; i < produtoInputs.length; i++) {
+        const file = produtoInputs[i].files[0];
+        if (file && !validateFileSize(file)) {
+          showStatus(`❌ Produto ${i + 1} muito grande (${formatFileSize(file.size)}). Máximo permitido: 1MB`, 'error');
+          return false;
+        }
+      }
+
+      return true;
     }
 
     async function enviarArquivoParaLambdaOriginal(file, fileNameWithFolder) {
@@ -843,6 +947,11 @@
         if (!empresaNome || !empresaDesc || !empresaTipo) {
           showStatus("❌ Preencha todos os campos obrigatórios.", 'error');
           return;
+        }
+
+        // VALIDAÇÃO DE TAMANHO DOS ARQUIVOS ANTES DO ENVIO
+        if (!validateAllFiles()) {
+          return; // Para a execução se algum arquivo for muito grande
         }
 
         const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
