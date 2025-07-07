@@ -438,7 +438,7 @@
       margin-right: 4px;
     }
 
-    /* BOTÃO ENVIAR DESTACADO */
+    /* BOTÃO ENVIAR DESTACADO EM VERDE */
     .btn-enviar {
       width: 100%;
       margin-top: 40px;
@@ -446,12 +446,12 @@
       font-size: 1.3rem;
       font-weight: 800;
       border-radius: 20px;
-      background: linear-gradient(135deg, #FF6B35 0%, #F7931E 25%, #FFD700 50%, #F7931E 75%, #FF6B35 100%);
+      background: linear-gradient(135deg, #00C851 0%, #3AAFA9 25%, #4ECDC4 50%, #3AAFA9 75%, #00C851 100%);
       background-size: 300% 300%;
       color: var(--text-white);
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      box-shadow: 0 12px 40px rgba(255, 107, 53, 0.6), 0 0 30px rgba(255, 215, 0, 0.3);
+      box-shadow: 0 12px 40px rgba(0, 200, 81, 0.6), 0 0 30px rgba(58, 175, 169, 0.4);
       position: relative;
       overflow: hidden;
       max-width: 100%;
@@ -465,11 +465,11 @@
     @keyframes btnEnviarGlow {
       0%, 100% {
         background-position: 0% 50%;
-        box-shadow: 0 12px 40px rgba(255, 107, 53, 0.6), 0 0 30px rgba(255, 215, 0, 0.3);
+        box-shadow: 0 12px 40px rgba(0, 200, 81, 0.6), 0 0 30px rgba(58, 175, 169, 0.4);
       }
       50% {
         background-position: 100% 50%;
-        box-shadow: 0 15px 50px rgba(255, 107, 53, 0.8), 0 0 40px rgba(255, 215, 0, 0.5);
+        box-shadow: 0 15px 50px rgba(0, 200, 81, 0.8), 0 0 40px rgba(78, 205, 196, 0.6);
       }
     }
 
@@ -480,7 +480,7 @@
       left: -2px;
       right: -2px;
       bottom: -2px;
-      background: linear-gradient(45deg, #FF6B35, #FFD700, #FF6B35, #FFD700);
+      background: linear-gradient(45deg, #00C851, #4ECDC4, #00C851, #4ECDC4);
       background-size: 400% 400%;
       border-radius: 22px;
       z-index: -1;
@@ -494,10 +494,10 @@
     }
 
     .btn-enviar:hover {
-      background: linear-gradient(135deg, #FF4500 0%, #FF6347 25%, #FFD700 50%, #FF6347 75%, #FF4500 100%);
+      background: linear-gradient(135deg, #00A844 0%, #2c8b87 25%, #3AAFA9 50%, #2c8b87 75%, #00A844 100%);
       background-size: 300% 300%;
       transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 20px 60px rgba(255, 107, 53, 0.8), 0 0 50px rgba(255, 215, 0, 0.6);
+      box-shadow: 0 20px 60px rgba(0, 200, 81, 0.8), 0 0 50px rgba(58, 175, 169, 0.7);
       animation: btnEnviarGlowHover 1.5s ease-in-out infinite;
     }
 
@@ -512,7 +512,7 @@
 
     .btn-enviar:active {
       transform: translateY(-2px) scale(1.01);
-      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.7), 0 0 25px rgba(255, 215, 0, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 200, 81, 0.7), 0 0 25px rgba(58, 175, 169, 0.5);
     }
 
     .btn-enviar::after {
