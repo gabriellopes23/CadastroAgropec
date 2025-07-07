@@ -1748,10 +1748,10 @@
           if (data && horario && titulo) {
             // Converter data do formato YYYY-MM-DD para DD/MM/YYYY
             const dataFormatada = data.split('-').reverse().join('/');
-            programacoes.push({ 
-              horario, 
-              titulo ,
-              data: dataFormatada, 
+            programacoes.push({
+              horario,
+              titulo,
+              data: dataFormatada
             });
           }
         }
@@ -1774,6 +1774,8 @@
           emailContact: emailContato,
           locationLink: linkMaps
         };
+
+                console.log("Conteúdo JSON a ser enviado:", content);
 
         // Enviar dados
         const jsonResult = await enviarJsonParaLambdaOriginal(content);
