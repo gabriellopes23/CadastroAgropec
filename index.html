@@ -51,6 +51,7 @@
       --file-button-border: #dee2e6;
       --file-button-hover: #e9ecef;
       --info-text-color: #6c757d;
+      --required-color: #ff0000;
     }
 
     * {
@@ -168,6 +169,13 @@
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+    }
+
+    /* Estilo para o asterisco de campo obrigatório */
+    .required {
+      color: var(--required-color);
+      font-weight: bold;
+      margin-left: 3px;
     }
 
     input[type="text"],
@@ -1074,7 +1082,7 @@
 
       <h1>Cadastro de Expositor</h1>
 
-      <label for="empresaNome">Nome da Empresa:</label>
+      <label for="empresaNome">Nome da Empresa:<span class="required">*</span></label>
       <input type="text" id="empresaNome" placeholder="Agro Cangaia">
 
       <label for="emailContato">Email para Contato:</label>
@@ -1083,10 +1091,10 @@
       <label for="linkMaps">Link de Endereço do Google Maps:</label>
       <input type="text" id="linkMaps" placeholder="https://maps.app.goo.gl/seu-endereco">
 
-      <label for="empresaDesc">Descrição:</label>
+      <label for="empresaDesc">Descrição:<span class="required">*</span></label>
       <textarea id="empresaDesc" rows="4" placeholder="Descrição da empresa"></textarea>
 
-      <label for="empresaTipo">Tipo:</label>
+      <label for="empresaTipo">Tipo:<span class="required">*</span></label>
       <select id="empresaTipo">
         <option value="">Selecione o Tipo</option>
         <option value="AGRICULTURA">AGRICULTURA</option>
@@ -1099,7 +1107,7 @@
         <option value="MINERACAO">MINERACAO</option>
       </select>
 
-      <label for="logoInput">Logo:</label>
+      <label for="logoInput">Logo:<span class="required">*</span></label>
       <div class="file-input-container">
         <input type="file" id="logoInput" accept="image/*">
         <label for="logoInput" class="file-input-button" id="logoButton">
@@ -1110,7 +1118,7 @@
         <img id="logoPreview" style="max-width: 250px; display: none;" />
       </div>
 
-      <label for="bannerInput">Banner:</label>
+      <label for="bannerInput">Banner:<span class="required">*</span></label>
       <div class="file-input-container">
         <input type="file" id="bannerInput" accept="image/*">
         <label for="bannerInput" class="file-input-button" id="bannerButton">
@@ -1248,7 +1256,7 @@
         <div class="error-icon"></div>
         <div class="error-title" id="errorTitle">Erro no Cadastro!</div>
         <div class="error-message" id="errorMessage">Ocorreu um erro ao enviar seus dados. Por favor, tente novamente.</div>
-        <button class="overlay-button" onclick="resetForm()">Tentar Novamente</button>
+        <button class="overlay-button" onclick="hideErrorAndReturnToForm()">Tentar Novamente</button>
       </div>
     </div>
   </div>
@@ -1261,12 +1269,115 @@
     let produtoCounter = 0;
     const MAX_FILE_SIZE = 1024 * 1024; // 1MB em bytes
 
+    // Variáveis para armazenar dados do formulário
+    let formData = {};
+
     // Elementos do DOM
     const formContent = document.getElementById('formContent');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const successOverlay = document.getElementById('successOverlay');
     const errorOverlay = document.getElementById('errorOverlay');
     const helpOverlay = document.getElementById('helpOverlay');
+
+    // Função para salvar dados do formulário
+    function saveFormData() {
+      formData = {
+        empresaNome: document.getElementById("empresaNome").value,
+        emailContato: document.getElementById("emailContato").value,
+        linkMaps: document.getElementById("linkMaps").value,
+        empresaDesc: document.getElementById("empresaDesc").value,
+        empresaTipo: document.getElementById("empresaTipo").value,
+        // Salvar informações dos produtos
+        produtos: [],
+        programacoes: []
+      };
+
+      // Salvar produtos
+      const produtoInputs = document.getElementsByClassName("produtoInput");
+      for (let i = 0; i < produtoInputs.length; i++) {
+        if (produtoInputs[i].files[0]) {
+          formData.produtos.push({
+            file: produtoInputs[i].files[0],
+            fileName: produtoInputs[i].files[0].name
+          });
+        }
+      }
+
+      // Salvar programações
+      const datas = document.getElementsByClassName("programacaoData");
+      const horarios = document.getElementsByClassName("programacaoHorario");
+      const titulos = document.getElementsByClassName("programacaoTitulo");
+      
+      for (let i = 0; i < datas.length; i++) {
+        formData.programacoes.push({
+          data: datas[i].value,
+          horario: horarios[i].value,
+          titulo: titulos[i].value
+        });
+      }
+
+      // Salvar arquivos de logo e banner
+      const logoFile = document.getElementById("logoInput").files[0];
+      const bannerFile = document.getElementById("bannerInput").files[0];
+      
+      if (logoFile) {
+        formData.logoFile = logoFile;
+        formData.logoFileName = logoFile.name;
+      }
+      
+      if (bannerFile) {
+        formData.bannerFile = bannerFile;
+        formData.bannerFileName = bannerFile.name;
+      }
+    }
+
+    // Função para restaurar dados do formulário
+    function restoreFormData() {
+      if (!formData || Object.keys(formData).length === 0) return;
+
+      document.getElementById("empresaNome").value = formData.empresaNome || "";
+      document.getElementById("emailContato").value = formData.emailContato || "";
+      document.getElementById("linkMaps").value = formData.linkMaps || "";
+      document.getElementById("empresaDesc").value = formData.empresaDesc || "";
+      document.getElementById("empresaTipo").value = formData.empresaTipo || "";
+
+      // Restaurar programações
+      if (formData.programacoes && formData.programacoes.length > 0) {
+        const container = document.getElementById("programacoesContainer");
+        container.innerHTML = "";
+        
+        formData.programacoes.forEach(prog => {
+          const div = document.createElement("div");
+          div.className = 'programacao-item';
+          div.innerHTML = `
+            <input type="date" placeholder="Data" class="programacaoData" value="${prog.data}" required>
+            <input type="text" placeholder="Horário (ex: 9:00)" class="programacaoHorario" value="${prog.horario}" required>
+            <input type="text" placeholder="Título da Programação" class="programacaoTitulo" value="${prog.titulo}" required>
+            <button type="button" onclick="this.parentElement.remove()" class="btn-remove">Remover</button>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      // Nota: Os arquivos não podem ser restaurados por questões de segurança do navegador
+      // Mas podemos mostrar uma mensagem informativa
+      if (formData.logoFileName) {
+        document.getElementById("logoFileName").textContent = `Arquivo anterior: ${formData.logoFileName} (será necessário selecionar novamente)`;
+        document.getElementById("logoFileName").style.color = 'var(--info-text-color)';
+      }
+      
+      if (formData.bannerFileName) {
+        document.getElementById("bannerFileName").textContent = `Arquivo anterior: ${formData.bannerFileName} (será necessário selecionar novamente)`;
+        document.getElementById("bannerFileName").style.color = 'var(--info-text-color)';
+      }
+    }
+
+    // Função para esconder erro e voltar ao formulário
+    function hideErrorAndReturnToForm() {
+      hideAllOverlays();
+      formContent.classList.remove('hidden');
+      restoreFormData();
+    }
 
     // Função para mostrar modal de ajuda
     function showHelpModal() {
@@ -1315,6 +1426,9 @@
       
       // Mostrar formulário
       formContent.classList.remove('hidden');
+      
+      // Limpar dados salvos
+      formData = {};
       
       // Limpar campos
       document.getElementById("empresaNome").value = "";
@@ -1538,21 +1652,31 @@
 
         // Validação de campos obrigatórios
         if (!empresaNome || !empresaDesc || !empresaTipo) {
-          showOverlay('error', 'Campos Obrigatórios!', 'Por favor, preencha todos os campos obrigatórios antes de continuar.');
+          showOverlay('error', 'Campos Obrigatórios!', 'Por favor, preencha todos os campos obrigatórios: Nome da Empresa, Descrição e Tipo.');
           return;
         }
 
-        // Validação de arquivos
+        // Validação de arquivos obrigatórios
+        const logoFile = document.getElementById("logoInput").files[0];
+        const bannerFile = document.getElementById("bannerInput").files[0];
+        
+        if (!logoFile || !bannerFile) {
+          showOverlay('error', 'Arquivos Obrigatórios!', 'Por favor, selecione os arquivos obrigatórios: Logo e Banner.');
+          return;
+        }
+
+        // Validação de tamanho dos arquivos
         if (!validateAllFiles()) {
           showOverlay('error', 'Arquivo Muito Grande!', 'Um ou mais arquivos excedem o tamanho máximo permitido de 1MB.');
           return;
         }
 
+        // Salvar dados do formulário antes de enviar
+        saveFormData();
+
         const empresaId = empresaNome.toLowerCase().replace(/\s/g, "");
         const uploadPromises = [];
 
-        const logoFile = document.getElementById("logoInput").files[0];
-        const bannerFile = document.getElementById("bannerInput").files[0];
         const empresaFolder = `Exhibitors/${empresaId}/`;
 
         // Mostrar loading
@@ -1620,7 +1744,8 @@
         // Enviar dados
         const jsonResult = await enviarJsonParaLambdaOriginal(content);
         
-        // Sucesso!
+        // Sucesso! Limpar dados salvos
+        formData = {};
         showOverlay('success');
 
       } catch (err) {
