@@ -1384,7 +1384,7 @@
           const div = document.createElement("div");
           div.className = 'programacao-item';
           div.innerHTML = `
-            <input type="date" placeholder="Data" class="programacaoData" value="${prog.data}" required>
+            <input type="text" placeholder="Data (ex: 13/07/2025)" class="programacaoData" value="${prog.data}" required>
             <input type="text" placeholder="Horário (ex: 9:00)" class="programacaoHorario" value="${prog.horario}" required>
             <input type="text" placeholder="Título da Programação" class="programacaoTitulo" value="${prog.titulo}" required>
             <button type="button" onclick="this.parentElement.remove()" class="btn-remove">Remover</button>
@@ -1602,7 +1602,7 @@
       const div = document.createElement("div");
       div.className = 'programacao-item';
       div.innerHTML = `
-        <input type="date" placeholder="Data" class="programacaoData" required>
+        <input type="text" placeholder="Data (ex: 13/07/2025)" class="programacaoData" required>
         <input type="text" placeholder="Horário (ex: 9:00)" class="programacaoHorario" required>
         <input type="text" placeholder="Título da Programação" class="programacaoTitulo" required>
         <button type="button" onclick="this.parentElement.remove()" class="btn-remove">Remover</button>
